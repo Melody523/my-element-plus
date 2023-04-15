@@ -1,0 +1,28 @@
+{
+  "name": "vitepress-my-ui",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "module": "es/index.mjs",
+  "description": "",
+  "files": [
+    "es",
+    "lib"
+  ],
+  "keywords": [
+    "vitepress",
+    "ui"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "author": "melody",
+  "license": "MIT",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "release": "release-it"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qddidi/easyest"
+  }
+}
