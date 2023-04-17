@@ -17,7 +17,7 @@
       <el-dropdown
         @command="command"
         :trigger="trigger || 'hover'"
-        placement="bottom-center"
+        placement="bottom"
         @visible-change="controlDropdown"
         :disabled="disabled"
       >
