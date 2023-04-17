@@ -4,7 +4,7 @@
       useType ? 'useType_style' : ''
     } ${disabled ? 'is_disabled' : ''}`"
   >
-    <span class="other_button_title_box">
+    <div class="other_button_title_box">
       <el-button
         v-if="dropdownModel === 'other'"
         :disabled="disabled"
@@ -12,12 +12,12 @@
       >
         <span class="button_title">{{ buttonTitle }}</span></el-button
       >
-    </span>
-    <span class="dropdown_button_box">
+    </div>
+    <div class="dropdown_button_box">
       <el-dropdown
         @command="command"
         :trigger="trigger || 'hover'"
-        placement="bottom-start"
+        placement="bottom-center"
         @visible-change="controlDropdown"
         :disabled="disabled"
       >
@@ -33,7 +33,7 @@
         </el-button>
         <template #dropdown>
           <template v-if="model === 'menuList'">
-            <el-dropdown-menu>
+            <el-dropdown-menu v-if="menuList?.length > 0">
               <el-dropdown-item
                 v-for="item in menuList"
                 :key="item.key"
@@ -49,7 +49,7 @@
           </template>
         </template>
       </el-dropdown>
-    </span>
+    </div>
   </div>
 </template>
 
@@ -58,7 +58,6 @@ import { toRefs, defineComponent, reactive } from "vue";
 
 interface ICompStateData {
   isDropdown: boolean;
-  test: boolean;
 }
 
 // 组件初始化数据接口
@@ -79,15 +78,7 @@ export default defineComponent({
     // 下拉菜单组
     menuList: {
       type: Array as () => Array<any>,
-      default: () => [
-        {
-          key: "test",
-          onClick: () => {
-            console.log("test");
-          },
-          label: "test",
-        },
-      ],
+      default: () => [],
     },
     // 组件模式 contant | menuList | none
     model: {
@@ -127,7 +118,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const state = reactive<ICompStateData>({
       isDropdown: false,
-      test: false,
     });
 
     // 执行传入的方法
@@ -254,8 +244,12 @@ export default defineComponent({
 }
 
 .menu_button_box {
-  display: inline-block;
+  display: flex;
+	justify-content: center;
+	align-items: center;
   .other_button_title_box {
+		box-sizing: border-box;
+		height: var(--menu-height);
     .el-button {
       width: var(--menu-default-width);
       box-sizing: border-box;
@@ -284,6 +278,11 @@ export default defineComponent({
     }
   }
   .dropdown_button_box {
+		box-sizing: border-box;
+		height: var(--menu-height);
+		:deep(.el-dropdown) {
+			vertical-align: middle;
+		}
     .el-button {
       box-sizing: border-box;
       border: var(--menu-border);
