@@ -50,6 +50,7 @@ import {
   watch,
   defineAsyncComponent,
   ref,
+  computed,
 } from "vue";
 export default defineComponent({
   name: "BasicSelectModal",
@@ -91,23 +92,8 @@ export default defineComponent({
     const onSearchClear = (arg: any, key: string, callback: any) => {
       emit("onSearchClear", arg, key, callback);
     };
-
-    watch(
-      () => props.modelValue,
-      (newValue) => {
-        state.inputValue = newValue;
-      },
-      { deep: true, immediate: true }
-    );
-
-    watch(
-      () => props.ruleModel,
-      (newValue) => {
-        state.ruleValue = newValue;
-      },
-      { deep: true, immediate: true }
-    );
-
+    state.inputValue = computed(() => props.modelValue);
+    state.ruleValue = computed(() => props.ruleModel);
     const onFocus = () => {
       state.inputRef.blur();
     };

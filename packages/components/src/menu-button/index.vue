@@ -26,7 +26,7 @@
             buttonTitle
           }}</span>
           <svg-icon
-            :color="true"
+            color="icon_style"
             :iconName="isDropdown ? 'icon-xiangshang' : 'icon-xiangxia'"
             className="icon_style"
           ></svg-icon>

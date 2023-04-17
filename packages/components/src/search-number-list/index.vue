@@ -199,8 +199,6 @@ export default defineComponent({
 		watch(
 			() => props.ruleModel,
 			(mewVal: any) => {
-				// state.inputValue = (mewVal && formatting(mewVal)) || '';
-				// state.ruleValue = (mewVal && formatting(mewVal)) || '';
 				state.ruleValue = mewVal;
 			},
 			{ deep: true, immediate: true }
@@ -227,9 +225,6 @@ export default defineComponent({
 				state.theValue = formatData.join(',');
 				emit('update:modelValue', state.theValue);
 			}
-			// state.modelVisible = false;
-			// state.inputValue = '';
-			// state.modelTarget = '';
 			beforeClose();
 		};
 
@@ -242,8 +237,7 @@ export default defineComponent({
 
 		// 输入改变
 		const inputChange = (val: string) => {
-			state.inputValue =
-				(props.modelValue && formatting(val)) || formatting(state.theValue);
+			state.inputValue = formatting(val);
 			onModelSubmit();
 		};
 
@@ -259,12 +253,8 @@ export default defineComponent({
 		);
 
 		state.countsNumber = computed(() => {
-			if (state.inputValue.length === 0) {
-				return 0;
-			} else if (state.inputValue?.split('\n')?.length) {
+			if (state.inputValue && state.inputValue?.split('\n')?.length) {
 				return state.inputValue?.split('\n')?.length;
-			} else if (state.inputValue.length > 0) {
-				return 1;
 			} else {
 				return 0;
 			}

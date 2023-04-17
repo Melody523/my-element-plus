@@ -91,7 +91,8 @@
 									v-else-if="['select', 'selectWith'].includes(item.type)"
 									v-model="form[item.key]"
 									:multiple="item.multiple"
-									:collapse-tags="item.multiple ? item.tags || 2 : item.tags"
+									:collapse-tags="true"
+									:max-collapse-tags="item.multiple ? item.tags || 1 : item.tags"
 									:collapse-tags-tooltip="
 										item.tags || item.multiple ? true : false
 									"

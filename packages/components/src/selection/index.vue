@@ -1,5 +1,5 @@
 <template>
-  <el-dialog append-to-body ref="dialogRef" :custom-class="`custom-dialog-detail ${!isRadio && 'dialog-container'}`" :title="title" @open="handleOpen" :width="dialogWidth" :top='dialogTop' :model-value="curModelValue" :before-close="() => { handleClose('cancel') }">
+  <el-dialog append-to-body ref="dialogRef" :class="`custom-dialog-detail ${!isRadio && 'dialog-container'}`" :title="title" @open="handleOpen" :width="dialogWidth" :top='dialogTop' :model-value="curModelValue" :before-close="() => { handleClose('cancel') }">
     <template #title v-if="!isRadio">
       <div class="dialog-title">
         <el-tabs v-model="activeName">
@@ -26,7 +26,7 @@
     </div>
     <div class="dialog-main">
       <div class="dialog-table-content">
-        <el-table v-show="activeName === 'first'" scrollbar-always-on ref="multipleTable" stripe :row-key="rowKey" :data="tableData" v-loading="tableLoading" :row-class-name="({ row }) => row.disabled && 'disabled'" :height="`${isRadio ? '400' : '285'}`" :highlight-current-row="!firstDisabled && isRadio" @row-click="rowClick" @selection-change="handleSelectionChange">
+        <el-table v-show="activeName === 'first'" scrollbar-always-on ref="multipleTable" stripe :row-key="rowKey" :data="tableData" v-loading="tableLoading" :row-class-name="({ row }) => row.disabled && 'disabled'" :height="`${isRadio ? '400' : '285'}`" :highlight-current-row="isRadio" @row-click="rowClick" @selection-change="handleSelectionChange">
           <el-table-column v-if="!isRadio" type="selection" width="55" :reserve-selection="true" align="center"></el-table-column>
           <el-table-column show-overflow-tooltip v-for="(item) in tableList.filter((item) => item.isShow)" :key="item.key" :prop="item.key" align="center" :label="item.label"></el-table-column>
         </el-table>

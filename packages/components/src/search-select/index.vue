@@ -10,7 +10,7 @@
     <template v-slot:com>
       <div class="widght_box">
         <el-select
-          :model-value="inputValue"
+          v-model="inputValue"
           :multiple="initMultiple"
           filterable
           :value-key="rowKey"
@@ -23,7 +23,8 @@
             initItem.placeholder || '请输入关键词搜索或选择'
           }`"
           @change="onSelect"
-          :collapse-tags="2"
+          :collapse-tags="true"
+          :max-collapse-tags="1"
           :collapse-tags-tooltip="true"
           @visible-change="visibleChange"
         >
@@ -89,7 +90,6 @@ import {
   computed,
   PropType,
 } from "vue";
-import { useCurrentInstance } from "../utils/utils";
 
 // 组件初始化数据接口
 interface ICompStateData {
@@ -200,7 +200,6 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { globalProperties } = useCurrentInstance();
     let state = reactive<ICompStateData>({
       inputValue: [],
       loading: false,

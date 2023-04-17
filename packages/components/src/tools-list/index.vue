@@ -50,7 +50,7 @@ import {
 } from 'vue';
 export default defineComponent({
 	name: 'ToolsList',
-	emits: ['update:modelValue', 'onChangeFormItem', 'getFormValue'],
+	emits: ['update:modelValue', 'onChangeFormItem'],
 	props: [
 		'onReset',
 		'onSearchSubmit',

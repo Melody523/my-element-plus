@@ -19,7 +19,7 @@
         <svg-icon
           :color="disabled ? '#a8abb2' : outPut > 0 ? '#256bff' : '#666666'"
           iconName="icon-paichuzhi"
-          :className="{ icon_box: true, icon_box_hasout: outPut > 0 }"
+          :className="`icon_box ${outPut > 0 ? 'icon_box_hasout' : ''}`"
         ></svg-icon>
         <span v-if="outPut > 0" class="span_number">{{ outPut || "" }}</span>
       </div>
@@ -45,7 +45,7 @@ export default defineComponent({
     },
     // 徽标计数 通过数组长度 字符串切割长度 直接传数量
     initValue: {
-      type: Array || String || Number,
+      type: String || Array || Number,
       default: "",
     },
   },
@@ -58,7 +58,7 @@ export default defineComponent({
       if (typeof props.initValue === "number") return props.initValue;
       return typeof props.initValue === "string"
         ? props.initValue && (props.initValue as string)?.split(",")?.length
-        : props.initValue?.length;
+        : (props.initValue as Array<any>)?.length;
     });
 
     return {
@@ -77,7 +77,7 @@ export default defineComponent({
 .filter_button {
   margin-left: 8px;
   min-width: 32px;
-	padding: 0 3px;
+  padding: 0 3px;
   height: 32px;
   background: #ffffff;
   border-radius: 4px;
@@ -104,7 +104,7 @@ export default defineComponent({
 .icon_box {
   width: 16px;
   height: 16px;
-	margin-right: 4px;
+  margin-right: 4px;
 }
 .icon_box_hasout {
   color: #256bff;

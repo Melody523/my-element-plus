@@ -11,7 +11,7 @@
       <!-- icon -->
       <i v-if="iconType === 'svg' && icon && !loading" class="button_icon">
         <svg-icon
-					:color="true"
+					color="icon_style"
           :iconName="icon"
 					className="icon_style"
         ></svg-icon>

@@ -136,8 +136,6 @@ export default defineComponent({
 	},
 
 	setup(props, { emit }) {
-		console.log('SearchForm', props);
-
 		let state = reactive<any>({
 			show: props.show,
 			RCFormRef: ref(null),
@@ -209,12 +207,6 @@ export default defineComponent({
 
 		const onChangeFormItem = (data: any, isFirst = false) => {
 			if (data.dataSource?.length) {
-				const oldData: any = {
-					formData: data?.formData || {},
-					type: 'formList',
-					dataSource: data?.dataSource || {},
-				};
-
 				changeForm
 					? changeForm({ ...(data?.formData || {}), ...props.defaultValue })
 					: (state.RCFormRef.form = {
@@ -224,12 +216,6 @@ export default defineComponent({
 
 				emit('onChangeFormItem', data);
 				if (isFirst && state.firstMount) {
-					// state.firstMount = false;
-					const oldData: any = {
-						formData: data?.formData || {},
-						type: 'formList',
-						dataSource: data?.dataSource || {},
-					};
 
 					changeForm
 						? changeForm({ ...(data?.formData || {}), ...props.defaultValue })
