@@ -406,7 +406,7 @@ interface StateType {
 }
 export default defineComponent({
 	name: 'RCForm',
-	emits: ['onDialogShow', 'onSearchClear', 'custDialog', 'inputEnter'],
+	emits: ['onDialogShow', 'onSearchClear', 'custDialog', 'inputEnter', 'update:modelValue'],
 	props: {
 		modelValue: {
 			type: Object as () => any,
@@ -584,8 +584,6 @@ export default defineComponent({
 			emit('custDialog', data, key);
 		};
 
-		const changeForm: any = inject('changeForm');
-
 		const onSearchClear = (
 			arg: any,
 			key: string,
@@ -605,7 +603,7 @@ export default defineComponent({
 					(formData.checkTable[key] = []);
 				formData?.checkTableList?.hasOwnProperty(key) &&
 					(formData.checkTableList[key] = []);
-				changeForm ? changeForm(formData) : (state.form = formData);
+				state.form = formData;
 			}
 			if (callback) {
 				callback();
@@ -641,8 +639,10 @@ export default defineComponent({
 				}
 			});
 		};
-
-		state.form = inject('form') || props.modelValue;
+		state.form = computed({ // 重新定义
+      get: () => props.modelValue,
+      set: (value) => emit("update:modelValue", value),
+    })
 		const getData = async (): Promise<void> => {
       try {
         if (props.fetchUrl) {
@@ -662,23 +662,20 @@ export default defineComponent({
 			}
 		});
 
-		watch(
-			() => props.modelValue,
-			() => {
-				if (props.modelValue && Object.keys(props.modelValue).length > 0) {
-					state.form = props.modelValue;
-				}
-			},
-			{ deep: true, immediate: true }
-		);
+
+		// watch(
+		// 	() => state.form,
+		// 	(val) => {
+		// 		if (Object.keys(val)?.length > 0) {
+		// 			emit('update:modelValue', val)
+		// 		}
+		// 	},
+		// 	{ deep: true, immediate: true }
+		// );
 
 		const promiseChangeData = (data: any) => {
 			return new Promise((res, rej) => {
-				if (changeForm) {
-					changeForm(data);
-				} else {
-					state.form = { ...data };
-				}
+				state.form = { ...data };
 				nextTick(() => {
 					res('finish');
 				});

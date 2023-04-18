@@ -11,11 +11,29 @@
           show: true,
           initForm: form
         }"
+        v-model="form"
         @onSearchSubmit="onSearchSubmit"
         @onDialogShow="onDialogShow"
       />
+      <RCForm
+        ref="rcFormRef"
+        v-bind="{
+          formList: formList,
+          staticData: staticData,
+          labelWidth: '140px',
+          formRules: rules,
+        }"
+        v-model="form"
+      >
+        <template v-slot:br1>
+          <div style="padding: 12px; color: red">第一个标题</div>
+        </template>
+        <template v-slot:br2>
+          <div style="padding: 12px; color: blue">第二个标题</div>
+        </template>
+      </RCForm>
       <div class="at_button_box">
-        <Button>默认状态</Button>
+        <Button @click="logForm">默认状态</Button>
         <Button disabled>默认禁用</Button>
         <Button loading>默认加载</Button>
         <Button disabled loading>默认禁用加载</Button>
@@ -155,23 +173,6 @@
         :ruleModel="form1['searchSelectRuleOutKey']"
         @custDialog="custDialog"
       />
-      <RCForm
-        ref="rcFormRef"
-        v-bind="{
-          formList: formList,
-          staticData: staticData,
-          labelWidth: '140px',
-          formRules: rules,
-        }"
-        v-model="form"
-      >
-        <template v-slot:br1>
-          <div style="padding: 12px; color: red">第一个标题</div>
-        </template>
-        <template v-slot:br2>
-          <div style="padding: 12px; color: blue">第二个标题</div>
-        </template>
-      </RCForm>
       <Selection
         ref="selectionRef"
         v-model="visible"
@@ -518,23 +519,22 @@ export default defineComponent({
           default:
             break;
         }
-        state.SearchFormRef.RCFormRef.form = JSON.parse(
-          JSON.stringify({
-            ...state.SearchFormRef.RCFormRef.form,
-            checkTable: {
-              ...state.SearchFormRef.RCFormRef.form?.checkTable,
-              [dialogKey]: filterCheckTableList(list, catchValue),
-            },
-            ...operaData,
-          })
-        );
+        state.form = {
+          ...state.form,
+          checkTable: {
+            ...state.form?.checkTable,
+            [dialogKey]: filterCheckTableList(list, catchValue),
+          },
+          ...operaData,
+        }
       }
     };
 		const onSearchSubmit = (res: any) => {
 			console.log(res);
-			
 		}
-
+    const logForm = () => {
+      console.log(state.form);
+    }
     return {
       ...toRefs(state),
       locale: zhCn,
@@ -543,6 +543,7 @@ export default defineComponent({
       custDialog,
       fetchUrl,
 			onSearchSubmit,
+      logForm,
     };
   },
   components: {

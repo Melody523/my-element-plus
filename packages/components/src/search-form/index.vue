@@ -11,6 +11,7 @@
 				isSearchForm: true,
 				show: hasShow ? false : show,
 			}"
+			v-model="form"
 			@onDialogShow="onDialogShow"
 			@custDialog="custDialog"
 			@inputEnter="onSearchSubmit"
@@ -67,6 +68,7 @@ import {
 	onMounted,
 	computed,
 	inject,
+	watch,
 } from 'vue';
 import RCForm from '../rc-form/index.vue';
 export default defineComponent({
@@ -78,8 +80,13 @@ export default defineComponent({
 		'onChangeFormItem',
 		'firstSearch',
 		'onReset',
+		'update:modelValue',
 	],
 	props: {
+		modelValue: {
+			type: Object as () => any,
+			default: () => ({}),
+		},
 		// 表单枚举
 		formList: {
 			type: Array as () => Array<any>,
@@ -137,6 +144,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		let state = reactive<any>({
+			form: {},
 			show: props.show,
 			RCFormRef: ref(null),
 			firstMount: true,
@@ -153,13 +161,11 @@ export default defineComponent({
 				});
 			state.show = false;
 		};
-
-		/**
-		 * 获取祖宗留下的修改组件
-		 */
-		const changeForm: any = inject('changeForm');
-		const form: any = inject('form');
-
+		state.form = computed({ // 重新定义
+      get: () => props.modelValue,
+      set: (value) => emit("update:modelValue", value),
+    })
+		
 		// 点击重置
 		const onReset = () => {
 			console.log('onReset', props.defaultValue);
@@ -167,7 +173,7 @@ export default defineComponent({
 				? JSON.parse(JSON.stringify(props.defaultValue))
 				: {};
 			// 如果存在祖宗组件留下的方法则执行,否则直接给子组件赋值
-			changeForm ? changeForm(newObj) : (state.RCFormRef.form = newObj);
+			state.form = newObj
 			emit('onReset');
 		};
 
@@ -185,11 +191,7 @@ export default defineComponent({
 				...props.defaultValue,
 			};
 			// 如果存在祖宗组件留下的方法则执行,否则直接给子组件赋值
-			changeForm
-				? changeForm(newObj)
-				: (state.RCFormRef.form = {
-						...newObj,
-				  });
+			state.form = newObj
 		});
 
 		const onDialogShow = (key: any, row = {}) => {
@@ -207,23 +209,11 @@ export default defineComponent({
 
 		const onChangeFormItem = (data: any, isFirst = false) => {
 			if (data.dataSource?.length) {
-				changeForm
-					? changeForm({ ...(data?.formData || {}), ...props.defaultValue })
-					: (state.RCFormRef.form = {
-							...(data?.formData || {}),
-							...props.defaultValue,
-					  });
+				state.form = { ...(data?.formData || {}), ...props.defaultValue }
 
 				emit('onChangeFormItem', data);
 				if (isFirst && state.firstMount) {
-
-					changeForm
-						? changeForm({ ...(data?.formData || {}), ...props.defaultValue })
-						: (state.RCFormRef.form = {
-								...(data?.formData || {}),
-								...props.defaultValue,
-						  });
-
+					state.form = { ...(data?.formData || {}), ...props.defaultValue }
 					emit('onChangeFormItem', data);
 					state.firstMount = false;
 					emit('firstSearch');
@@ -235,11 +225,7 @@ export default defineComponent({
 		};
 
 		const getFormValue: any = () => {
-			if (form) {
-				return form;
-			} else {
-				return state.RCFormRef.form;
-			}
+			return state.form
 		};
 
 		return {
@@ -251,7 +237,6 @@ export default defineComponent({
 			changeShow,
 			hasShow,
 			onChangeFormItem,
-			form,
 			getFormValue,
 		};
 	},

@@ -12,7 +12,7 @@
         <el-input
           :placeholder="placeholder"
           ref="inputRef"
-          v-model="inputValue"
+          :model-value="inputValue"
           :disabled="disabled"
           :class="`my-input ${disabled ? 'my_input_disabled' : ''}`"
           @click="onDialogShow(initItem.key)"
