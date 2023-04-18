@@ -282,8 +282,8 @@ export default defineComponent({
           .fetchUrl(props.dealFetchFunc(getParams))
           .then((res: any) => {
             if (query === state.query) {
-              const { tableData } = props.renderFunc(res)
-              setOptions(tableData, true, false);
+              const { data } = props.renderFunc(res)
+              setOptions(data, true, false);
             }
           })
           .catch((err: any) => {

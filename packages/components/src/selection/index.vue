@@ -1,5 +1,5 @@
 <template>
-  <el-dialog append-to-body ref="dialogRef" :class="`custom-dialog-detail ${!isRadio && 'dialog-container'}`" :title="title" @open="handleOpen" :width="dialogWidth" :top='dialogTop' :model-value="curModelValue" :before-close="() => { handleClose('cancel') }">
+  <el-dialog append-to-body ref="dialogRef" :class="`custom-dialog-detail ${!isRadio && 'dialog-container'}`" :title="title" @open="handleOpen" :width="dialogWidth" :top='dialogTop' :model-value="modelValue" :before-close="() => { handleClose('cancel') }">
     <template #title v-if="!isRadio">
       <div class="dialog-title">
         <el-tabs v-model="activeName">
@@ -11,12 +11,11 @@
     <div class="page-searchbox" v-if="formList.length > 0 && activeName === 'first'">
       <SearchForm
         ref="searchFormRef"
-        v-if="formList.length"
+        v-model:form="form"
         v-bind="{
           formList: formList,
           staticData,
           labelWidth: '96px',
-          initValue: form,
           hasSetting: false
         }"
         @onSearchSubmit="searchData"
@@ -120,6 +119,7 @@ export default defineComponent({
       type: String,
       default: 'id'
     },
+    // 点击确认后关闭弹窗
     confirmClose: {
       type: Boolean,
       default: true
@@ -166,27 +166,18 @@ export default defineComponent({
     /**
      * 设置祖父公开的form值
      */
-		provide('form', state.form);
+		// provide('form', state.form);
     /**
      * 给子孙和自己提供浅修改form数据的方法
      * 直接传入一个新的object对象 属于深赋值 直接更改整个对象
      * 如果不是深赋值请直接state.form.xxx进行赋值
      */
     const changeForm = (newObj: any) => {
-      const newObjs = {...newObj} // 最终取值
-      const newConcat = {...state.form, ...newObjs} // 组合原本的数据
-      const newConcatKeys = Object.keys(newConcat); // 获取组合后数据key数组
-      const keys = Object.keys(newObjs); // 获取最终key数组
-      // 循环组合后数组,校验是否属于最终key数组,有就赋值没有就删掉
-      newConcatKeys.forEach((item)=>{
-        if (keys.includes(item)) {
-          state.form[item] = newObj[item]
-        }else{
-          delete state.form[item]
-        }
-      })
+      console.log('newObj', newObj);
+      
+      // state.form = deepClone(newObj)
     };
-    provide('changeForm', changeForm);
+    // provide('changeForm', changeForm);
     // 确认或取消弹窗
     const handleClose = (action: string): void => {
       if(action === "confirm"){
@@ -194,12 +185,12 @@ export default defineComponent({
         if (props.confirmClose) {
           emit('update:modelValue', false)
           state.multipleTable.clearSelection()
-          changeForm({})
+          state.form = {}
         }
       } else {
         emit('update:modelValue', false)
         state.multipleTable.clearSelection()
-        changeForm({})
+        state.form = {}
       }
 
     };
@@ -215,7 +206,7 @@ export default defineComponent({
           state.selectTableData = []
           state.multipleTable.clearSelection()
         }
-        changeForm({})
+        state.form = {}
       }
     };
     // 当选择项发生变化时会触发该事件
@@ -234,13 +225,11 @@ export default defineComponent({
     }
     // 重置
     const resetInfo = () => {
-      changeForm({})
+      state.form = {}
       searchData()
     };
     // 获取表格数据
     const getData = async (): Promise<void> => { // flag为了判断弹窗第一次获取数据
-    console.log('props.fetchUrl', props.fetchUrl);
-    
       if (!props.fetchUrl) return;
       try {
         let formData = deepClone(state.form);
@@ -253,10 +242,10 @@ export default defineComponent({
             formData[itm.key] = state.form[itm.key].split(',');
           }
         })
-        props.fetchUrl(props.dealFetchFunc({currentPage, pageSize, ...formData}))
+        props.fetchUrl(props.dealFetchFunc({currentPage, pageSize, ...props.params, ...formData}))
           .then((res: any) => {
-            const { tableData, count } = props.renderFunc(res)
-            state.tableData = tableData
+            const { data, count } = props.renderFunc(res)
+            state.tableData = data
             hooksCommonState.tableLoading = false;
             hooksCommonState.pager.total = count;
           })
@@ -283,7 +272,7 @@ export default defineComponent({
           let _item = list.find(item => item.key == key) || []
           lt.push({ ..._item, isShow: true })
         } else if (typeof(data[key]) === 'object') {
-          lt.push({ ...data[key], isShow: true })
+          lt.push({ isShow: true, ...data[key]  })
         }
       })
       return lt
@@ -315,11 +304,6 @@ export default defineComponent({
       state.tableList = deepClone(getFirstList(props.showTableList, state.tableListBackup));
     }, { immediate: true });
 
-    const curModelValue = computed({ // 重新定义
-      get: () => props.modelValue,
-      set: (value) => emit("update:modelValue", value),
-    })
-
     return {
       ...toRefs(state),
       ...toRefs(hooksCommonState),
@@ -336,7 +320,6 @@ export default defineComponent({
       rowClick,
       toFirstTab,
       changeForm,
-      curModelValue,
     };
   },
   components: {

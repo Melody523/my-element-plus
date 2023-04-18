@@ -9,6 +9,7 @@
           labelWidth: '160px',
           hasSetting: true,
           show: true,
+          initForm: form
         }"
         @onSearchSubmit="onSearchSubmit"
         @onDialogShow="onDialogShow"
@@ -53,7 +54,6 @@
           <template v-slot:icon>A</template>
           传一个插槽icon的按钮
         </Button>
-        <MenuButton></MenuButton>
       </div>
       <div class="at_button_box">
         <MenuButton> </MenuButton>
@@ -212,9 +212,11 @@ export default defineComponent({
   setup() {
     // zh_CN zh_TW en_US zh_VN
     const fetchUrl = (params: any) => {
+      console.log(params);
+      
       return new Promise((resolve, reject) => {
         resolve({
-          tableData: [
+          data: [
             { id: 1, name: "名称1", code: "1" },
             { id: 2, name: "名称2", code: "2" },
             { id: 3, name: "名称3", code: "3" },
@@ -461,12 +463,14 @@ export default defineComponent({
         textDateError:
           "我是错误数据我故意的11111111111111111111111111111111111111",
         cascader: [1, 110000, 110100, 110101],
+        searchOut2: [1,2,3]
       },
       searchData: {},
     });
     const onDialogShow = (key: string) => {
       switch (key) {
-        case "search1": {
+        case "search2": 
+        case "searchOut2": {
           state.searchData = {
             title: "选择客户",
             selectKey: key,
@@ -499,9 +503,15 @@ export default defineComponent({
       if (state.SearchFormRef) {
         let operaData = {};
         switch (dialogKey) {
-          case "search1": {
+          case "search2": {
             operaData = {
-              search1: list.map((item: any) => item.code),
+              search2: list.map((item: any) => item.code),
+            };
+            break;
+          }
+          case "searchOut2": {
+            operaData = {
+              searchOut2: list.map((item: any) => item.code),
             };
             break;
           }
