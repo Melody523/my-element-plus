@@ -11,11 +11,11 @@
     <div class="page-searchbox" v-if="formList.length > 0 && activeName === 'first'">
       <SearchForm
         ref="searchFormRef"
-        v-model:form="form"
         v-bind="{
           formList: formList,
           staticData,
           labelWidth: '96px',
+          initValue: form,
           hasSetting: false
         }"
         @onSearchSubmit="searchData"
@@ -166,18 +166,27 @@ export default defineComponent({
     /**
      * 设置祖父公开的form值
      */
-		// provide('form', state.form);
+		provide('form', state.form);
     /**
      * 给子孙和自己提供浅修改form数据的方法
      * 直接传入一个新的object对象 属于深赋值 直接更改整个对象
      * 如果不是深赋值请直接state.form.xxx进行赋值
      */
     const changeForm = (newObj: any) => {
-      console.log('newObj', newObj);
-      
-      // state.form = deepClone(newObj)
+      const newObjs = {...newObj} // 最终取值
+      const newConcat = {...state.form, ...newObjs} // 组合原本的数据
+      const newConcatKeys = Object.keys(newConcat); // 获取组合后数据key数组
+      const keys = Object.keys(newObjs); // 获取最终key数组
+      // 循环组合后数组,校验是否属于最终key数组,有就赋值没有就删掉
+      newConcatKeys.forEach((item)=>{
+        if (keys.includes(item)) {
+          state.form[item] = newObj[item]
+        }else{
+          delete state.form[item]
+        }
+      })
     };
-    // provide('changeForm', changeForm);
+    provide('changeForm', changeForm);
     // 确认或取消弹窗
     const handleClose = (action: string): void => {
       if(action === "confirm"){
@@ -185,12 +194,12 @@ export default defineComponent({
         if (props.confirmClose) {
           emit('update:modelValue', false)
           state.multipleTable.clearSelection()
-          state.form = {}
+          changeForm({})
         }
       } else {
         emit('update:modelValue', false)
         state.multipleTable.clearSelection()
-        state.form = {}
+        changeForm({})
       }
 
     };
@@ -206,7 +215,7 @@ export default defineComponent({
           state.selectTableData = []
           state.multipleTable.clearSelection()
         }
-        state.form = {}
+        changeForm({})
       }
     };
     // 当选择项发生变化时会触发该事件
@@ -225,7 +234,7 @@ export default defineComponent({
     }
     // 重置
     const resetInfo = () => {
-      state.form = {}
+      changeForm({})
       searchData()
     };
     // 获取表格数据
