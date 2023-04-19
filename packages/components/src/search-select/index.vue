@@ -3,14 +3,14 @@
     v-bind="{
       isUse: !!initItem.ruleOutKey,
       disabled: disabled,
-      initValue: ruleValue,
+      initValue: ruleModel,
     }"
     @click="onDialogShow(initItem.ruleOutKey, initItem)"
   >
     <template v-slot:com>
       <div class="widght_box">
         <el-select
-          v-model="inputValue"
+          :model-value="inputValue"
           :multiple="initMultiple"
           filterable
           :value-key="rowKey"
@@ -18,15 +18,22 @@
           :remote-method="onSearch"
           :loading="loading"
           :disabled="disabled"
-          :clearable="false"
-          :placeholder="`${
-            initItem.placeholder || '请输入关键词搜索或选择'
-          }`"
+          :clearable="true"
+          :placeholder="`${initItem.placeholder || '请输入关键词搜索或选择'}`"
           @change="onSelect"
           :collapse-tags="true"
           :max-collapse-tags="1"
           :collapse-tags-tooltip="true"
-          @visible-change="visibleChange"
+          @clear="
+            () => {
+              !disabled &&
+                onSearchClear(
+                  initItem.clearData,
+                  initItem.key,
+                  initItem.callback
+                );
+            }
+          "
         >
           <el-option
             v-for="item in options"
@@ -36,33 +43,7 @@
           />
         </el-select>
         <div class="control_button">
-          <i
-            v-show="isClear && !disabled"
-            @click.stop="
-              () => {
-                !disabled &&
-                  onSearchClear(
-                    initItem.clearData,
-                    initItem.key,
-                    initItem.callback
-                  );
-              }
-            "
-            class="clear_button el-icon el-input__icon el-input__clear"
-          >
-            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-              <path
-                fill="currentColor"
-                d="m466.752 512-90.496-90.496a32 32 0 0 1 45.248-45.248L512 466.752l90.496-90.496a32 32 0 1 1 45.248 45.248L557.248 512l90.496 90.496a32 32 0 1 1-45.248 45.248L512 557.248l-90.496 90.496a32 32 0 0 1-45.248-45.248L466.752 512z"
-              ></path>
-              <path
-                fill="currentColor"
-                d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"
-              ></path>
-            </svg>
-          </i>
           <svg-icon
-            v-if="!initItem.searchApi"
             :color="disabled ? '#a8abb2' : '#666666'"
             iconName="icon-a-xuanzeqi"
             :className="`button_padding button_point ${
@@ -89,17 +70,16 @@ import {
   defineAsyncComponent,
   computed,
   PropType,
+  watchEffect,
 } from "vue";
+import { deepClone } from "../utils/utils";
 
 // 组件初始化数据接口
 interface ICompStateData {
   inputValue: any;
   loading: boolean;
   options: Array<any>;
-  ruleValue: string;
-  isClear: boolean;
   query: string;
-  isVisible: boolean;
 }
 
 export default defineComponent({
@@ -155,14 +135,10 @@ export default defineComponent({
       type: Array as () => Array<any>,
       default: () => [],
     },
-    // options lable 自定义
-    labelWith: {
-      type: Array as () => Array<string>,
-      default: () => [],
-    },
-    // options lable 自定义
+    // options lable 通过Format自定义
     labelFormat: {
-      type: Function,
+      type: [Array, Function],
+      default: [],
     },
     // 是否返回所有数据，不做过滤
     catchValueAll: {
@@ -188,7 +164,7 @@ export default defineComponent({
       type: Object,
       default: {},
     },
-    // 表格初始值
+    // 初始值选项
     initialDataSource: {
       type: Array as () => Array<any>,
       default: () => [],
@@ -204,13 +180,8 @@ export default defineComponent({
       inputValue: [],
       loading: false,
       options: [],
-      ruleValue: "",
-      isClear: false,
       query: "",
-      isVisible: false,
     });
-    // ----------------获取单据属性模板（基础数据接口专用）end----------------------------
-
     /**
      * 选择数据（包括select选择和弹窗选择）
      * 触发数据改变。组件相关的变化 根据watch得value进行处理
@@ -241,8 +212,6 @@ export default defineComponent({
         } else {
           if (state.inputValue && Object.keys(state.inputValue).length > 0) {
             newOptions = [state.inputValue, ...newOptions];
-          } else {
-            newOptions = [...newOptions];
           }
         }
       }
@@ -282,7 +251,7 @@ export default defineComponent({
           .fetchUrl(props.dealFetchFunc(getParams))
           .then((res: any) => {
             if (query === state.query) {
-              const { data } = props.renderFunc(res)
+              const { data } = props.renderFunc(res);
               setOptions(data, true, false);
             }
           })
@@ -301,60 +270,6 @@ export default defineComponent({
     };
 
     // -------------------------util------------------------
-
-    /**
-     * 数据格式化
-     *
-     * 关于option数据格式化处理的方法
-     * oldObject: 未格式化的数据
-     * label: 自定义label取值通常是和searchBy取相同值
-     * props.searchTargetKey: 设定的取值
-     */
-    const controlOptions = (oldObject: any) => {
-      // debugger
-      const getValue = {};
-      if (props.catchValueAll) {
-        Object.assign(getValue, oldObject);
-      } else if (props.catchValue && props.catchValue.length > 0) {
-        props.catchValue.forEach((element) => {
-          getValue[element] = oldObject[element];
-        });
-      }
-
-      /**
-       * target Object
-       *
-       * return String
-       */
-      let newObjectLabel = (target: any) => {
-        if (props.labelFormat) {
-          return props.labelFormat(target);
-        } else if (props?.labelWith?.length > 0) {
-          return props?.labelWith
-            .map((item: any) => {
-              return oldObject?.[item];
-            })
-            .join(" ");
-        } else {
-          return target?.[props.searchBy];
-        }
-      };
-
-      const newObject = {
-        label: newObjectLabel(oldObject),
-        value:
-          Object.keys(getValue).length > 0
-            ? { ...getValue }
-            : {
-                code: oldObject.code,
-                name: oldObject.name,
-                id: oldObject.id,
-              },
-      };
-      newObject[props.rowKey] = oldObject[props.rowKey];
-      return JSON.parse(JSON.stringify(newObject));
-    };
-
     /**
      * 数组根据attrName 去重
      *
@@ -371,6 +286,51 @@ export default defineComponent({
           !res.has(item[props.rowKey]) && res.set(item[props.rowKey], 1)
       );
       return newData;
+    };
+    /**
+     * 数据格式化
+     *
+     * 关于option数据格式化处理的方法
+     * oldObject: 未格式化的数据
+     * label: 自定义label取值通常是和searchBy取相同值
+     * props.searchTargetKey: 设定的取值
+     */
+    const controlOptions = (oldObject: any) => {
+      let getValue = {};
+      if (props.catchValueAll) {
+        getValue = { ...oldObject }
+      } else if (props.catchValue?.length > 0) {
+        props.catchValue.forEach((element) => {
+          getValue[element] = oldObject[element];
+        });
+      }
+      let newObjectLabel = (target: any) => {
+        if (typeof props.labelFormat === "function") {
+          return props.labelFormat(target);
+        } else if (typeof props.labelFormat === "object" && props.labelFormat?.length > 0) {
+          return props.labelFormat
+            ?.map((item: any) => {
+              return oldObject?.[item];
+            })
+            .join(" ");
+        } else {
+          return target?.[props.searchBy];
+        }
+      };
+
+      const newObject = {
+        [props.rowKey]: oldObject[props.rowKey],
+        label: newObjectLabel(oldObject),
+        value:
+          Object.keys(getValue).length > 0
+            ? { ...getValue }
+            : {
+                code: oldObject.code,
+                name: oldObject.name,
+                id: oldObject.id,
+              },
+      };
+      return deepClone(newObject);
     };
 
     // 监听父子value的变化
@@ -400,48 +360,24 @@ export default defineComponent({
       },
       { deep: true, immediate: true }
     );
-
-    watch(
-      () => props.ruleModel,
-      (newValue) => {
-        state.ruleValue = newValue;
-      },
-      { deep: true, immediate: true }
-    );
-
-    const isClear = computed(() => {
-      let rt = false;
-      if (props.initMultiple) {
-        if (state.inputValue && state.inputValue?.length > 0) {
-          rt = true;
-        }
-      } else {
-        if (state.inputValue) {
-          rt = true;
-        }
-      }
-      return rt;
-    });
-
     const onSearchClear = (arg: any, key: string, callback: any) => {
-			onSelect(props.initMultiple ? [] : '');
+      onSelect(props.initMultiple ? [] : "");
       emit("onSearchClear", arg, key, callback);
     };
-
-    const visibleChange = (val: any) => {
-      state.isVisible = val;
-    };
-
+    watchEffect(()=>{
+      if(!props.fetchUrl && props.initialDataSource?.length > 0){
+        setOptions(props.initialDataSource, true, false)
+      }
+    })
     return {
       ...toRefs(state),
+      ...toRefs(props),
       onSearch,
       onSelect,
       controlOptions,
       deleteRepeat,
       onDialogShow,
       onSearchClear,
-      visibleChange,
-      isClear,
     };
   },
   components: {
@@ -458,8 +394,12 @@ export default defineComponent({
   display: flex;
   align-items: center;
   position: relative;
+  box-sizing: border-box;
   :deep(.el-select) {
     width: 100%;
+  }
+  :deep(.el-input__suffix-inner) {
+    padding-right: 24px;
   }
   :deep(.el-select__tags) {
     max-width: calc(100% - 50px) !important;
@@ -487,18 +427,9 @@ export default defineComponent({
   :deep(.el-select__input) {
     margin-left: 7px;
   }
-  &:hover {
-    .clear_button {
-      display: inline-flex;
-    }
-  }
-}
-.button_border {
-  border-radius: 5px;
 }
 .control_button {
   position: absolute;
-  width: auto;
   display: flex;
   flex-wrap: nowrap;
   height: 100%;
@@ -517,12 +448,5 @@ export default defineComponent({
 }
 .button_point_disabled {
   cursor: not-allowed;
-}
-.clear_button {
-  color: #909399;
-  display: none;
-}
-.is_visible {
-  transform: rotate(180deg);
 }
 </style>

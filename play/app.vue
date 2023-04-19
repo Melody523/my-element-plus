@@ -357,6 +357,7 @@ export default defineComponent({
           type: "modalTextarea",
           isShow: true,
           ruleOutKey: "searchNumberOutKey", // 排除功能所需要的key
+          // ruleTitle: '排除',
           // changeCallBack: () => searchNumberListOutCallBack(),
         },
         {
@@ -383,7 +384,7 @@ export default defineComponent({
           rowKey: "code",
           initMultiple: true,
           disabled: false,
-          labelWith: ["code", "name"],
+          labelFormat: ["code", "name"],
           catchValue: ["code", "name"],
           ruleOutKey: "selectSearchOut",
           isShow: true,
@@ -416,7 +417,11 @@ export default defineComponent({
           disabled: false,
           catchValue: ["code", "name"],
           isShow: true,
-          searchApi: "default",
+          initialDataSource: [
+            { id: 1, name: "名称1", code: "1" },
+            { id: 2, name: "名称2", code: "2" },
+            { id: 3, name: "名称3", code: "3" },
+          ],
           changeCallBack: (val: any) => {
             console.log("changeCallBack", val);
           },
@@ -487,7 +492,7 @@ export default defineComponent({
       state.searchData = {
         ...state.searchData,
         checkTable:
-          state.SearchFormRef.RCFormRef?.form?.checkTable?.[key] || [],
+          state.form?.checkTable?.[key] || [],
       };
     };
     const onSearchClear = () => {
@@ -497,9 +502,8 @@ export default defineComponent({
       const { list, type } = data;
       let dialogKey = key == "" ? type : key;
       let catchValue = state.formList?.find(
-        (item) => item.key === dialogKey || item?.ruleOutKey === dialogKey
+        (item: any) => item.key === dialogKey || item?.ruleOutKey === dialogKey
       )?.catchValue || ["id", "code", "name"];
-      console.log(state.SearchFormRef);
 
       if (state.SearchFormRef) {
         let operaData = {};

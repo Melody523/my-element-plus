@@ -104,7 +104,9 @@ export default defineComponent({
 .icon_box {
   width: 16px;
   height: 16px;
-  margin-right: 4px;
+}
+.span_number {
+  padding-left: 3px;
 }
 .icon_box_hasout {
   color: #256bff;

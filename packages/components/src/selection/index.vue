@@ -33,8 +33,8 @@
           <the-pagination popper-class="pagination-popper" v-bind="pager" small @cust-currentChange="currentChange($event, getData)"
             @cust-sizeChange="sizeChange($event, getData)"></the-pagination>
         </div>
-        <div class="select-table">
-          <el-table scrollbar-always-on v-show="activeName === 'second' && selectTableData.length > 0" stripe :row-key="rowKey" :data="selectTableData" height="400">
+        <div class="select-table" v-show="activeName === 'second' && selectTableData.length > 0">
+          <el-table scrollbar-always-on stripe :row-key="rowKey" :data="selectTableData" height="400">
             <el-table-column show-overflow-tooltip v-for="(item) in tableList.filter((item) => item.isShow)" :key="item.key" :prop="item.key" align="center" :label="item.label"></el-table-column>
             <el-table-column label="操作" align="center" column-key="control" width="150">
               <template v-slot="scope">

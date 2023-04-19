@@ -70,7 +70,6 @@
 									@clear="delete form[item.key]"
 									v-bind="{
                     ...item,
-										hasRuleOut: item.ruleOutKey ? true : false,
 										modelProps: item,
                     disabled: item.disabled || (item.disabledFun && item.disabledFun(form))
 									}"

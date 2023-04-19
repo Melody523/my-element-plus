@@ -1,11 +1,11 @@
 <template>
 	<InputAndButton
 		v-bind="{
-			isUse: hasRuleOut,
+			isUse: !!modelProps.ruleOutKey,
 			disabled: disabled,
 			initValue: ruleValue,
 		}"
-		@click="onClickShowModel('ruleOut')"
+		@click="onClickShowModel('ruleValue')"
 	>
 		<template v-slot:com>
 			<div class="widght_box">
@@ -23,7 +23,7 @@
               :color="disabled ? '#a8abb2' : '#666666'"
               iconName="icon-fangda"
               :className="`button_point ${disabled ? 'button_point_disabled' : ''}`"
-              @click="onClickShowModel"
+              @click="onClickShowModel('theValue')"
             ></svg-icon>
 					</template>
 				</el-input>
@@ -31,42 +31,32 @@
 				<el-dialog
 					v-model="modelVisible"
 					append-to-body
-					:title="
-						modelTarget === 'ruleOut'
-							? `${
-									modelProps.ruleTitle ||
-									modelProps.title ||
-									modelProps.label ||
-									'多单号查询'
-							  } - 排除项`
-							: modelProps.title || modelProps.label || '多单号查询'
-					"
+					:title="(modelTarget === 'ruleValue' && modelProps.ruleTitle) || `多单号查询${modelTarget === 'ruleValue' ? ' - 排除项' : '' }`"
 					width="800px"
 					:top="dialogTop"
 					:before-close="beforeClose"
+					custom-class="number-list-dialog"
 				>
 					<div className="dialog_title_box">
-						<div style="color: #9e9e9e">
+						<div className="title_tips">
 							如需同时使用多个值进行查询，请使用逗号,空格或换行分隔{{
 								modelProps?.maxLength > 0
 									? ` --- 最多可以输入${modelProps.maxLength}行`
 									: ''
 							}}
 						</div>
-						<div>
-							<el-tooltip
-								class="box-item"
-								effect="dark"
-								content="格式化：移除字符前后空格，移除空白行，将逗号或者空格分隔转变为换行展示"
-								placement="top-end"
+						<el-tooltip
+							class="box-item"
+							effect="dark"
+							content="格式化：移除字符前后空格，移除空白行，将逗号或者空格分隔转变为换行展示"
+							placement="top-end"
+						>
+							<at-button
+								type="plain"
+								@click="inputValue = formatting(inputValue)"
+								>数据格式化</at-button
 							>
-								<at-button
-                  type="plain"
-									@click="inputValue = formatting(inputValue)"
-									>数据格式化</at-button
-								>
-							</el-tooltip>
-						</div>
+						</el-tooltip>
 					</div>
 					<div class="modal_contant">
 						<el-input
@@ -77,10 +67,7 @@
 						>
 						</el-input>
 						<div class="count_box">
-							行数:
-							<span>
-								{{ countsNumber }}
-							</span>
+							行数: {{ countsNumber }}
 						</div>
 					</div>
 					<template #footer>
@@ -101,7 +88,6 @@ import {
 	toRefs,
 	reactive,
 	defineComponent,
-	watch,
 	defineAsyncComponent,
 	computed,
 } from 'vue';
@@ -110,7 +96,7 @@ interface stateModel {
 	inputValue: string; // 弹窗值
 	modelVisible: boolean; // 弹窗展示
 	dialogTop: string; // 弹窗上边界距
-	ruleValue: string; // 排除值
+	ruleValue: any; // 排除值
 	modelTarget: string; // 点击前记录弹窗目标，关闭弹窗的时候根据弹窗目标给目标赋值
 	countsNumber: any; // 合计数字（提供给外部直接定义展示的合计数字）
 }
@@ -131,11 +117,6 @@ export default defineComponent({
 		modelProps: {
 			type: Object,
 			default: () => ({}),
-		},
-		// 是否启用排除功能
-		hasRuleOut: {
-			type: Boolean,
-			default: false,
 		},
 		// 排除对应的key
 		ruleModel: {
@@ -183,26 +164,9 @@ export default defineComponent({
 				return;
 			}
 			state.modelVisible = true;
-			if (model === 'ruleOut') {
-				state.inputValue =
-					(props.ruleModel && formatting(props.ruleModel)) ||
-					formatting(state.ruleValue);
-				state.modelTarget = 'ruleOut';
-			} else {
-				state.inputValue =
-					(props.modelValue && formatting(props.modelValue)) ||
-					formatting(state.theValue);
-				state.modelTarget = '';
-			}
+			state.inputValue = formatting(state[model]);
+			state.modelTarget = model;
 		};
-
-		watch(
-			() => props.ruleModel,
-			(mewVal: any) => {
-				state.ruleValue = mewVal;
-			},
-			{ deep: true, immediate: true }
-		);
 
 		// 多行输入 --- 弹窗点击确认的时候
 		const onModelSubmit = () => {
@@ -215,23 +179,15 @@ export default defineComponent({
           message: `当前输入数据超出可输入最大行数${props.modelProps.maxLength}，请进行调整！`,
           type: 'warning',
         })
-				state.theValue = props.modelValue;
 				return;
 			}
-			if (state.modelTarget === 'ruleOut') {
-				state.ruleValue = formatData.join(',');
-				emit('update:ruleModel', state.ruleValue);
-			} else {
-				state.theValue = formatData.join(',');
-				emit('update:modelValue', state.theValue);
-			}
+			state[state.modelTarget] = formatData.join(',');
 			beforeClose();
 		};
 
 		// 点击清空
 		const isClearInput = () => {
 			state.theValue = '';
-			emit('update:modelValue', '');
 			emit('clear', '');
 		};
 
@@ -241,16 +197,14 @@ export default defineComponent({
 			onModelSubmit();
 		};
 
-		state.theValue = JSON.parse(JSON.stringify(props.modelValue));
-
-		// 监听父子value的变化
-		watch(
-			() => props.modelValue,
-			(newValue) => {
-				state.theValue = newValue;
-				emit('change', newValue);
-			}
-		);
+		state.theValue = computed({
+			get: () => props.modelValue,
+			set: (value) => emit("update:modelValue", value),
+		})
+		state.ruleValue = computed({
+			get: () => props.ruleModel,
+			set: (value) => emit("update:ruleModel", value),
+		})
 
 		state.countsNumber = computed(() => {
 			if (state.inputValue && state.inputValue?.split('\n')?.length) {
@@ -292,13 +246,14 @@ export default defineComponent({
 .widght_box {
 	width: 100%;
 }
+.title_tips {
+	color: #9e9e9e;
+}
 .dialog_title_box {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 11px;
-}
-.dialog_control_button {
 }
 .button_point {
 	cursor: pointer;
@@ -315,12 +270,9 @@ export default defineComponent({
 }
 .count_box {
 	// width: 51px;
-	height: 20px;
-	font-size: 14px;
-	font-family: PingFangSC-Regular, PingFang SC;
-	font-weight: 400;
-	color: #999999;
 	line-height: 20px;
+	font-size: 14px;
+	color: #999999;
 	position: absolute;
 	right: 12px;
 	bottom: 9px;
@@ -331,5 +283,12 @@ export default defineComponent({
 }
 .mrgl-10 {
   margin-left: 10px;
+}
+</style>
+<style lang="less">
+.number-list-dialog {
+	.el-dialog__body {
+		padding: 10px 20px;
+	}
 }
 </style>
