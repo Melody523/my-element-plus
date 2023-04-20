@@ -120,25 +120,26 @@ export default defineComponent({
     ).value;
     // 控制侧边菜单样式
     const checkBoxControl = (target: string) => {
+      const dateType = props.selectTime ? "datetime" : "date"
       switch (target) {
         case "daterange":
           state.dateType = props.selectTime ? "datetimerange" : "daterange";
           state.format = "";
           break;
         case "dateBefore":
-          state.dateType = props.selectTime ? "datetime" : "date";
+          state.dateType = dateType;
           state.format = `~ 至 ${formatStr}`;
           break;
         case "dateAfter":
-          state.dateType = props.selectTime ? "datetime" : "date";
+          state.dateType = dateType;
           state.format = `${formatStr} 至 ~`;
           break;
         case "nowDateBefore":
-          state.dateType = props.selectTime ? "datetime" : "date";
+          state.dateType = dateType;
           state.format = `~ 至 ${formatStr}`;
           break;
         case "nowDateAfter":
-          state.dateType = props.selectTime ? "datetime" : "date";
+          state.dateType = dateType;
           state.format = `${formatStr} 至 ~`;
           break;
         default:
@@ -152,11 +153,7 @@ export default defineComponent({
       return date
         ? globalProperties
             .dayjs(date)
-            .format(
-              format ||
-                props.initFormat ||
-                (props.selectTime ? "YYYY-MM-DD HH:mm:ss" : "YYYY-MM-DD")
-            )
+            .format(format || props.initFormat || formatStr)
         : "";
     };
 
@@ -195,46 +192,6 @@ export default defineComponent({
 
       emit("update:modelValue", outPutValue);
     };
-
-    // 首次进入加载初始输入状态和初始值
-    const deepCloneModelValue = JSON.parse(JSON.stringify(props.modelValue));
-
-    if (deepCloneModelValue && deepCloneModelValue.length > 0) {
-      if (deepCloneModelValue[2]) {
-        checkBoxControl(deepCloneModelValue[2]);
-        switch (deepCloneModelValue[2]) {
-          case "daterange":
-            state.value = [deepCloneModelValue[0], deepCloneModelValue[1]];
-            break;
-          case "dateBefore":
-            state.value = deepCloneModelValue[1];
-            break;
-          case "dateAfter":
-            state.value = deepCloneModelValue[0];
-            break;
-          case "nowDateBefore":
-            state.value = formatDate(Date(), "YYYY-MM-DD 23:59:59");
-            break;
-          case "nowDateAfter":
-            state.value = formatDate(Date(), "YYYY-MM-DD 00:00:00");
-            break;
-          default:
-            break;
-        }
-      } else {
-        if (deepCloneModelValue[0] === "") {
-          checkBoxControl("dateBefore");
-          state.value = deepCloneModelValue[1];
-        } else if (deepCloneModelValue[1] === "") {
-          checkBoxControl("dateAfter");
-          state.value = deepCloneModelValue[0];
-        } else if (deepCloneModelValue[0] && deepCloneModelValue[1]) {
-          checkBoxControl("daterange");
-          state.value = deepCloneModelValue;
-        }
-      }
-    }
-
     // 监听外部数据变化，同步组件内部状态
     watch(
       () => props.modelValue,
@@ -280,7 +237,7 @@ export default defineComponent({
         }
         emit("change", state.value);
       },
-      { deep: true }
+      { deep: true, immediate: true }
     );
 
     const visibleChange = (status: any) => {

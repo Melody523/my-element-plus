@@ -9,7 +9,6 @@
           labelWidth: '160px',
           hasSetting: true,
           show: true,
-          initForm: form
         }"
         v-model="form"
         @onSearchSubmit="onSearchSubmit"
@@ -231,7 +230,7 @@ export default defineComponent({
       form1: {
         searchNumber: "",
         ruleOutKey: "",
-        digitalRange: [3, 2],
+        // digitalRange: [3, 2],
       },
       rcFormRef: ref(null),
       selectionRef: ref(null),
@@ -291,6 +290,10 @@ export default defineComponent({
           key: "digitalRange",
           label: "区间输入",
           type: "digitalRange",
+          changeCallBack: (val: any, form: any) => {
+            // console.log(val, form);
+            
+          },
           isShow: true,
         },
         {
@@ -338,7 +341,7 @@ export default defineComponent({
             return time.getTime() <= Date.now();
           },
           changeCallBack: (e: any) => {
-            console.log(e);
+            // console.log(e);
           },
         },
         {
@@ -386,7 +389,7 @@ export default defineComponent({
           ruleOutKey: "selectSearchOut",
           isShow: true,
           changeCallBack: (val: any) => {
-            console.log("changeCallBack", val);
+            // console.log("changeCallBack", val);
           },
         },
         {
@@ -401,7 +404,7 @@ export default defineComponent({
           catchValue: ["code", "name"],
           isShow: true,
           changeCallBack: (val: any) => {
-            console.log("changeCallBack", val);
+            // console.log("changeCallBack", val);
           },
         },
         {
@@ -420,7 +423,7 @@ export default defineComponent({
             { id: 3, name: "名称3", code: "3" },
           ],
           changeCallBack: (val: any) => {
-            console.log("changeCallBack", val);
+            // console.log("changeCallBack", val);
           },
         },
         {
@@ -459,14 +462,9 @@ export default defineComponent({
         ],
       },
       form: {
-        text: "12312312",
-        text2: 2,
-        text3: 3,
-        textDate: new Date(),
-        textDateError:
-          "我是错误数据我故意的11111111111111111111111111111111111111",
-        cascader: [1, 110000, 110100, 110101],
-        searchOut2: [1,2,3]
+        input: "12312312",
+        searchOut2: [1,2,3],
+        date1: [new Date(), '', 'nowDateAfter']
       },
       searchData: {},
     });

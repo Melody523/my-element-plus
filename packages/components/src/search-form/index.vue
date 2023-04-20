@@ -32,7 +32,6 @@
 						isSorting,
 					}"
 					:disabled="toolsListDisabled"
-					@onChangeFormItem="onChangeFormItem"
 				/>
 			</template>
 		</RCForm>
@@ -52,7 +51,6 @@
 					isSorting,
 				}"
 				:disabled="toolsListDisabled"
-				@onChangeFormItem="onChangeFormItem"
 			/>
 		</div>
 	</div>
@@ -77,7 +75,6 @@ export default defineComponent({
 		'onSearchSubmit',
 		'onDialogShow',
 		'custDialog',
-		'onChangeFormItem',
 		'firstSearch',
 		'onReset',
 		'update:modelValue',
@@ -187,6 +184,7 @@ export default defineComponent({
 
 		onMounted(async () => {
 			const newObj = {
+				...state.form,
 				...props.initValue,
 				...props.defaultValue,
 			};
@@ -207,23 +205,6 @@ export default defineComponent({
 			);
 		});
 
-		const onChangeFormItem = (data: any, isFirst = false) => {
-			if (data.dataSource?.length) {
-				state.form = { ...(data?.formData || {}), ...props.defaultValue }
-
-				emit('onChangeFormItem', data);
-				if (isFirst && state.firstMount) {
-					state.form = { ...(data?.formData || {}), ...props.defaultValue }
-					emit('onChangeFormItem', data);
-					state.firstMount = false;
-					emit('firstSearch');
-				}
-			} else {
-				state.firstMount = false;
-				emit('firstSearch');
-			}
-		};
-
 		const getFormValue: any = () => {
 			return state.form
 		};
@@ -236,7 +217,6 @@ export default defineComponent({
 			custDialog,
 			changeShow,
 			hasShow,
-			onChangeFormItem,
 			getFormValue,
 		};
 	},

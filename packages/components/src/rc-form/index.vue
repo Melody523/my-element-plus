@@ -482,7 +482,7 @@ export default defineComponent({
 		}
 	},
 	setup(props, { emit }) {
-		console.log('props', props);
+		// console.log('props', props);
 
 		const { globalProperties } = useCurrentInstance();
 		let state = reactive<StateType>({
