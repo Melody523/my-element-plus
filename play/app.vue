@@ -144,9 +144,6 @@
       <Icon iconName="icon-sum" color="red"></Icon>
       <SearchNumberList
         v-model="form1['searchNumber']"
-        v-bind="{
-          hasRuleOut: true,
-        }"
         :ruleModel="form1['ruleOutKey']"
         @update:ruleModel="(tValue) => (form1['ruleOutKey'] = tValue)"
       />

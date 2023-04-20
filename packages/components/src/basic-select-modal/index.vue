@@ -60,7 +60,7 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    // 排除对应的key
+    // 排除项的值
     ruleModel: {
       type: String,
       default: "",

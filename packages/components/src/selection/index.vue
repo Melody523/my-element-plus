@@ -394,7 +394,7 @@ export default defineComponent({
       justify-content: center;
     }
     .el-dialog__body {
-      margin-top: 0;
+      margin-top: 15px;
       padding: 0 10px;
     }
     .el-dialog__body .page-searchbox {

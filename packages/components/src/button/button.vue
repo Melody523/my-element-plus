@@ -6,7 +6,7 @@
   >
     <el-button
       @click="onClick"
-      v-bind="{ disabled: disabled, loading: loading }"
+      v-bind="{ disabled, loading }"
     >
       <!-- icon -->
       <i v-if="iconType === 'svg' && icon && !loading" class="button_icon">

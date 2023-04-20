@@ -35,7 +35,7 @@
 					width="800px"
 					:top="dialogTop"
 					:before-close="beforeClose"
-					custom-class="number-list-dialog"
+					class="number-list-dialog"
 				>
 					<div className="dialog_title_box">
 						<div className="title_tips">
