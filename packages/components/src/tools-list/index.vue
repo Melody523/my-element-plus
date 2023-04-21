@@ -53,7 +53,7 @@ import {
 } from "vue";
 export default defineComponent({
   name: "ToolsList",
-  emits: ["update:modelValue", "onChangeFormItem"],
+  emits: ["update:modelValue"],
   props: [
     "onReset",
     "onSearchSubmit",
@@ -63,16 +63,11 @@ export default defineComponent({
   ],
   setup(_, { emit }) {
     let state = reactive<any>({
-      ctRef: ref(null),
+      
     });
-
-    const onChangeFormItem = (data: any, isFirst = false) => {
-      emit("onChangeFormItem", data, isFirst);
-    };
 
     return {
       ...toRefs(state),
-      onChangeFormItem,
     };
   },
   components: {

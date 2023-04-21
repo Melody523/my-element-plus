@@ -120,24 +120,18 @@ export default defineComponent({
     ).value;
     // 控制侧边菜单样式
     const checkBoxControl = (target: string) => {
-      const dateType = props.selectTime ? "datetime" : "date"
+      const dateType = props.selectTime ? "datetime" : "date";
       switch (target) {
         case "daterange":
           state.dateType = props.selectTime ? "datetimerange" : "daterange";
           state.format = "";
           break;
         case "dateBefore":
-          state.dateType = dateType;
-          state.format = `~ 至 ${formatStr}`;
-          break;
-        case "dateAfter":
-          state.dateType = dateType;
-          state.format = `${formatStr} 至 ~`;
-          break;
         case "nowDateBefore":
           state.dateType = dateType;
           state.format = `~ 至 ${formatStr}`;
           break;
+        case "dateAfter":
         case "nowDateAfter":
           state.dateType = dateType;
           state.format = `${formatStr} 至 ~`;
@@ -160,7 +154,7 @@ export default defineComponent({
     const onChange = (value: any) => {
       // clear
       if (!value) {
-        if (["daterange", "dateBefore", "dateAfter"].includes(state.classKey)) {
+        if (["dateBefore", "dateAfter"].includes(state.classKey)) {
           emit("update:modelValue", ["", "", state.classKey]);
         } else {
           emit("update:modelValue", ["", "", "daterange"]);

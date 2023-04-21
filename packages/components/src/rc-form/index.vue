@@ -9,9 +9,9 @@
 		>
 			<div
 				:class="`contant_item ${
-					isSearchForm && show ? 'contant_item_show' : ''
+					hasToolsCol && show ? 'contant_item_show' : ''
 				}  ${
-					!isSearchForm ? 'contant_item_no_padding' : 'contant_item_search_form'
+					!hasToolsCol ? 'contant_item_no_padding' : 'contant_item_search_form'
 				}`"
 			>
 				<el-row>
@@ -37,7 +37,7 @@
 						<div
 							v-else
 							:class="` ${
-								isSearchForm ? 'my_item_box' : 'my_item_box_no_search'
+								hasToolsCol ? 'my_item_box' : 'my_item_box_no_search'
 							} ${Object.keys(formRules)?.length > 0 ?  'rules_item_box' : ''}`"
 							:style="
 								formItemMrgb || formItemMrgb === 0
@@ -147,6 +147,7 @@
 									:disabled="
 										item.disabled || (item.disabledFun && item.disabledFun(form))
 									"
+									v-bind="{ ...item }"
 									v-model="form[item.key]"
 									@change="
 										(val) => {
@@ -367,11 +368,11 @@
 						</div>
 					</el-col>
 					<el-col
-						v-show="(isSearchForm && !show)"
+						v-show="(hasToolsCol && !show)"
 						:span="24 / rowNumber"
 					>
 						<div class="my_item_box">
-							<!-- 查询表单用的查询按钮，如果index属于2并且组件模式isSearchForm为true -->
+							<!-- 查询表单用的查询按钮，如果index属于2并且组件模式hasToolsCol为true -->
 							<slot name="searchButton"></slot>
 						</div>
 					</el-col>
@@ -421,8 +422,8 @@ export default defineComponent({
 			type: Number,
 			default: 3,
 		},
-		// 是否查询表单
-		isSearchForm: {
+		// 是否有工具col
+		hasToolsCol: {
 			type: Boolean,
 			default: false,
 		},
@@ -482,8 +483,6 @@ export default defineComponent({
 		}
 	},
 	setup(props, { emit }) {
-		// console.log('props', props);
-
 		const { globalProperties } = useCurrentInstance();
 		let state = reactive<StateType>({
 			form: {},
@@ -590,18 +589,11 @@ export default defineComponent({
 		) => {
 			if (arg) {
 				const formData = deepClone(state.form);
-				Object.keys(arg).map((item) => {
+				Object.keys({ ...arg, key }).map((item) => {
 					formData[item] = arg[item];
 					formData?.checkTable?.hasOwnProperty(item) &&
 						(formData.checkTable[item] = []);
-					formData?.checkTableList?.hasOwnProperty(item) &&
-						(formData.checkTableList[item] = []);
 				});
-				formData[key] = null;
-				formData?.checkTable?.hasOwnProperty(key) &&
-					(formData.checkTable[key] = []);
-				formData?.checkTableList?.hasOwnProperty(key) &&
-					(formData.checkTableList[key] = []);
 				state.form = formData;
 			}
 			if (callback) {
@@ -612,7 +604,7 @@ export default defineComponent({
 
 		// 除去下拉多选可能出现的空数组默认值
 		const submitFormControl = (val: any) => {
-			const deepCloneVal = JSON.parse(JSON.stringify(val));
+			const deepCloneVal = deepClone(val);
 			Object.keys(val).forEach((item) => {
 				if (Array.isArray(val[item]) && val[item].length === 0) {
 					delete deepCloneVal[item];
@@ -661,38 +653,6 @@ export default defineComponent({
 			}
 		});
 
-
-		// watch(
-		// 	() => state.form,
-		// 	(val) => {
-		// 		if (Object.keys(val)?.length > 0) {
-		// 			emit('update:modelValue', val)
-		// 		}
-		// 	},
-		// 	{ deep: true, immediate: true }
-		// );
-
-		const promiseChangeData = (data: any) => {
-			return new Promise((res, rej) => {
-				state.form = { ...data };
-				nextTick(() => {
-					res('finish');
-				});
-			});
-		};
-
-		const flagChangeForm = (data: any, clearRule = false) => {
-			state.onChangeFlag = true;
-			promiseChangeData(data).finally(() => {
-				state.onChangeFlag = false;
-				if (clearRule) {
-					nextTick(() => {
-						state.formRef.clearValidate();
-					});
-				}
-			});
-		};
-
 		const firstDetailTitleIndex: any = computed(() => {
 			return props.formList.findIndex(item => (item.contant) )
 		})
@@ -707,7 +667,6 @@ export default defineComponent({
 			onSearchClear,
 			submit,
 			getText,
-			flagChangeForm,
 			keyUpEnter,
 			custDialog,
 			isEmpty,

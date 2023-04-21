@@ -306,6 +306,7 @@ export default defineComponent({
           key: "date2",
           label: "日期选择2",
           type: "dateSelect",
+          selectTime: true,
           isShow: true,
         },
         {
@@ -462,9 +463,9 @@ export default defineComponent({
         ],
       },
       form: {
-        input: "12312312",
-        searchOut2: [1,2,3],
-        date1: [new Date(), '', 'nowDateAfter']
+        // input: "12312312",
+        // searchOut2: [1,2,3],
+        // date1: [new Date(), '', 'nowDateAfter']
       },
       searchData: {},
     });

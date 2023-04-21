@@ -8,7 +8,7 @@
 				rowNumber,
 				staticData,
 				labelWidth,
-				isSearchForm: true,
+				hasToolsCol: true,
 				show: hasShow ? false : show,
 			}"
 			v-model="form"
@@ -23,15 +23,8 @@
 						onSearchSubmit,
 						show: hasShow ? false : show,
 						changeShow: hasShow ? false : changeShow,
-						hasSetting: hasSetting,
-						formList,
-						formValue: form,
-						businessObjectMeta,
-						getFormValue,
-						isCanSelected: false,
-						isSorting,
+						disabled: toolsListDisabled,
 					}"
-					:disabled="toolsListDisabled"
 				/>
 			</template>
 		</RCForm>
@@ -42,15 +35,8 @@
 					onSearchSubmit,
 					show: hasShow ? false : show,
 					changeShow: hasShow ? false : changeShow,
-					hasSetting: hasSetting,
-					formList,
-					formValue: form,
-					businessObjectMeta,
-					getFormValue,
-					isCanSelected: true,
-					isSorting,
+					disabled: toolsListDisabled,
 				}"
-				:disabled="toolsListDisabled"
 			/>
 		</div>
 	</div>
@@ -69,6 +55,7 @@ import {
 	watch,
 } from 'vue';
 import RCForm from '../rc-form/index.vue';
+import { deepClone } from '../utils/utils';
 export default defineComponent({
 	name: 'SearchForm',
 	emits: [
@@ -112,14 +99,6 @@ export default defineComponent({
 			type: Number,
 			default: 3,
 		},
-		hasSetting: {
-			type: Boolean,
-			default: true,
-		},
-		businessObjectMeta: {
-			type: String,
-			default: '',
-		},
 		toolsListDisabled: {
 			type: Boolean,
 			default: false,
@@ -132,11 +111,6 @@ export default defineComponent({
 			type: [String, Number],
 			default: '400',
 		},
-		//是否显示自定义搜索项
-    isSorting: {
-      type: Boolean,
-      default: true
-    },
 	},
 
 	setup(props, { emit }) {
@@ -144,19 +118,18 @@ export default defineComponent({
 			form: {},
 			show: props.show,
 			RCFormRef: ref(null),
-			firstMount: true,
 		});
 
 		// 点击查询
 		const onSearchSubmit = () => {
 			state.RCFormRef.submit()
 				.then((res: any) => {
+					state.show = false;
 					emit('onSearchSubmit', res);
 				})
 				.catch((error: any) => {
 					console.log(error);
 				});
-			state.show = false;
 		};
 		state.form = computed({ // 重新定义
       get: () => props.modelValue,
@@ -167,7 +140,7 @@ export default defineComponent({
 		const onReset = () => {
 			console.log('onReset', props.defaultValue);
 			const newObj = props.defaultValue
-				? JSON.parse(JSON.stringify(props.defaultValue))
+				? deepClone(props.defaultValue)
 				: {};
 			// 如果存在祖宗组件留下的方法则执行,否则直接给子组件赋值
 			state.form = newObj
@@ -205,10 +178,6 @@ export default defineComponent({
 			);
 		});
 
-		const getFormValue: any = () => {
-			return state.form
-		};
-
 		return {
 			...toRefs(state),
 			onSearchSubmit,
@@ -217,7 +186,6 @@ export default defineComponent({
 			custDialog,
 			changeShow,
 			hasShow,
-			getFormValue,
 		};
 	},
 	components: {
