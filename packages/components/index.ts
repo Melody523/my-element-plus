@@ -10,6 +10,7 @@ export default {
       app.use(components[c]);
       if (c == 'Icon') {
         app.component('SvgIcon', components['Icon']);
+        app.component('Icon', components['Icon']);
       }
     }
     app.use(ElementPlus)

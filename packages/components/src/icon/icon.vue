@@ -3,13 +3,9 @@
     <use :xlink:href="iconClassName" :fill="color" />
   </svg>
 </template>
-<script lang="ts">
-export default {
-  name: "Icon",
-};
-</script>
 <script setup lang="ts">
 import { computed, defineProps, defineExpose } from "vue";
+
 const props = defineProps({
   iconName: {
     //图标名称: icon-copy
@@ -36,6 +32,7 @@ const svgClass = computed(() => {
   return `svg-icon ${props.color ? "colorClass" : ""} ${props.className}`;
 });
 defineExpose({ color: props.color });
+defineOptions({ name: 'Icon' });
 </script>
 
 <style lang="less" scoped>
