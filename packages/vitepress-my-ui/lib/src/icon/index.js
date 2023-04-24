@@ -1,0 +1,1 @@
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const t=require("./icon.vue.js"),o=require("../utils/withinstall/index.js"),e=o.default(t.default);exports.Icon=e;exports.default=e;

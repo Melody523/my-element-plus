@@ -1,22 +1,16 @@
 {
   "name": "@vitepress-element-ui/components",
-  "version": "1.0.0",
+  "version": "2.1.1",
   "description": "",
-  "type": "module",
   "main": "./index.ts",
   "scripts": {
     "build": "vite build",
-    "build:vitepress-my-ui": "gulp -f packages/components/script/build/index.ts",
-    "publish:easyest": "gulp -f packages/components/script/publish/index.ts"
+    "build:vitepress-my-ui": "gulp -f packages/components/script/build/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/gulp": "^4.0.10",
-    "@vitepress-element-ui/utils": "workspace:^1.0.0",
-    "gulp": "^4.0.2",
-    "sucrase": "^3.31.0"
   },
   "dependencies": {
     "dayjs": "^1.11.7"

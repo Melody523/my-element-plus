@@ -1,0 +1,1 @@
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const r=require("./index.vue.js"),t=require("../utils/withinstall/index.js"),e=t.default(r.default);exports.SearchForm=e;exports.default=e;
