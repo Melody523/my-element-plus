@@ -8,10 +8,6 @@ export default {
   install: (app: App) => {
     for (let c in components) {
       app.use(components[c]);
-      if (c == 'Icon') {
-        app.component('SvgIcon', components['Icon']);
-        app.component('Icon', components['Icon']);
-      }
     }
     app.use(ElementPlus)
   },

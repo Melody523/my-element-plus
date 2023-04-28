@@ -1,24 +1,21 @@
 declare const _sfc_main: import("vue").DefineComponent<Readonly<{
     disabled?: any;
     show?: any;
-    onSearchSubmit?: any;
-    onReset?: any;
-    changeShow?: any;
+    hasShow?: any;
 }>, {
-    [x: string]: import("vue").Ref<any>;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<Readonly<{
+    emit: (event: "update:modelValue" | "onSearchSubmit" | "onReset" | "changeShow", ...args: any[]) => void;
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("update:modelValue" | "onSearchSubmit" | "onReset" | "changeShow")[], "update:modelValue" | "onSearchSubmit" | "onReset" | "changeShow", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<Readonly<{
     disabled?: any;
     show?: any;
-    onSearchSubmit?: any;
-    onReset?: any;
-    changeShow?: any;
+    hasShow?: any;
 }>>> & {
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
+    onOnSearchSubmit?: ((...args: any[]) => any) | undefined;
+    onOnReset?: ((...args: any[]) => any) | undefined;
+    onChangeShow?: ((...args: any[]) => any) | undefined;
 }, {
     readonly disabled?: any;
     readonly show?: any;
-    readonly onSearchSubmit?: any;
-    readonly onReset?: any;
-    readonly changeShow?: any;
+    readonly hasShow?: any;
 }>;
 export default _sfc_main;

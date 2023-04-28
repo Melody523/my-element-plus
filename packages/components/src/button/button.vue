@@ -28,14 +28,14 @@
 </template>
 
 <script lang="ts">
-import { toRefs, reactive, defineComponent, useSlots } from "vue";
+import { toRefs, reactive, defineComponent, useSlots, defineAsyncComponent } from "vue";
 export default defineComponent({
   name: "Button",
   emits: ["click"],
   props: {
     /**
      * 按钮类型
-     * default | danger | primary | plain | text |warning
+     * default | danger | primary | plain | text | warning
      */
     type: {
       type: String,
@@ -73,14 +73,14 @@ export default defineComponent({
       default: false,
     },
     /**
-     * icon名称 当前变量仅支持fa和svg-icon
+     * icon名称 当前变量仅支持svg-icon
      */
     icon: {
       type: String,
       default: null,
     },
     /**
-     * 引用icon的类型 暂时支持svg(svg-icon)两种方式
+     * 引用icon的类型 暂时支持svg(svg-icon)和slot
      */
     iconType: {
       type: String,
@@ -108,6 +108,11 @@ export default defineComponent({
       state,
       onClick,
     };
+  },
+  components: {
+    SvgIcon: defineAsyncComponent(
+      () => import("../icon/index.vue")
+    ),
   },
 });
 </script>
@@ -224,7 +229,9 @@ export default defineComponent({
       font-size: var(--button-font-size);
       font-weight: 400;
       color: var(--button-color);
-      line-height: var(--button-title-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 		.button_icon {
 			color: var(--button-color);
@@ -276,6 +283,14 @@ export default defineComponent({
     padding: var(--button-padding);
     .button_title {
       color: var(--button-disabled-color);
+    }
+    .button_icon {
+      color: var(--button-disabled-color);
+      .icon_style {
+        :deep(use) {
+          filter: drop-shadow(var(--button-disabled-color) 80px 0);
+        }
+      }
     }
     &:hover {
       opacity: 0.5;

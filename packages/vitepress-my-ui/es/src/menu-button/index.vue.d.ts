@@ -36,13 +36,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    /**
-     * 特殊枚举给搜索组件提供特殊样式
-     */
-    useType: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
 }, {
     command: (onClick: () => void) => void;
     emit: (event: "click" | "onControlDropdown", ...args: any[]) => void;
@@ -58,7 +51,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     buttonTitle: import("vue").Ref<string>;
     trigger: import("vue").Ref<string>;
     dropdownModel: import("vue").Ref<string>;
-    useType: import("vue").Ref<boolean>;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("click" | "onControlDropdown")[], "click" | "onControlDropdown", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     buttonType: {
         type: StringConstructor;
@@ -97,13 +89,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    /**
-     * 特殊枚举给搜索组件提供特殊样式
-     */
-    useType: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
 }>> & {
     onClick?: ((...args: any[]) => any) | undefined;
     onOnControlDropdown?: ((...args: any[]) => any) | undefined;
@@ -116,6 +101,5 @@ declare const _sfc_main: import("vue").DefineComponent<{
     buttonTitle: string;
     trigger: string;
     dropdownModel: string;
-    useType: boolean;
 }>;
 export default _sfc_main;

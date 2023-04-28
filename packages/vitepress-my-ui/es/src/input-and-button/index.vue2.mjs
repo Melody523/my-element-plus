@@ -1,4 +1,4 @@
-import { defineComponent as l, reactive as f, computed as o, toRefs as r } from "vue";
+import { defineComponent as l, reactive as o, computed as f, toRefs as r, defineAsyncComponent as m } from "vue";
 const d = l({
   name: "InputAndButton",
   emits: ["click"],
@@ -17,17 +17,22 @@ const d = l({
       default: ""
     }
   },
-  setup(t, { emit: a }) {
-    let e = f({
+  setup(e, { emit: a }) {
+    let t = o({
       outPut: 0
     });
-    return e.outPut = o(() => {
-      var i, n, u;
-      return typeof t.initValue == "number" ? t.initValue : typeof t.initValue == "string" ? t.initValue && ((n = (i = t.initValue) == null ? void 0 : i.split(",")) == null ? void 0 : n.length) : (u = t.initValue) == null ? void 0 : u.length;
+    return t.outPut = f(() => {
+      var n, i, u;
+      return typeof e.initValue == "number" ? e.initValue : typeof e.initValue == "string" ? e.initValue && ((i = (n = e.initValue) == null ? void 0 : n.split(",")) == null ? void 0 : i.length) : (u = e.initValue) == null ? void 0 : u.length;
     }), {
-      ...r(e),
+      ...r(t),
       emit: a
     };
+  },
+  components: {
+    SvgIcon: m(
+      () => import("../icon/index.vue.mjs")
+    )
   }
 });
 export {

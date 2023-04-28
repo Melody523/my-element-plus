@@ -35,7 +35,7 @@ const iconClassName = computed(() => {
 });
 // 给图标添加上类名
 const svgClass = computed(() => {
-  return `svg-icon ${props.color ? "colorClass" : ""} ${props.className}`;
+  return `svg-icon ${(props.color || props.className) ? "colorClass" : ""} ${props.className}`;
 });
 defineExpose({ color: props.color });
 </script>

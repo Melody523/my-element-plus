@@ -1,85 +1,87 @@
 <template>
-	<InputAndButton
-		v-bind="{
-			isUse: !!modelProps.ruleOutKey,
-			disabled: disabled,
-			initValue: ruleValue,
-		}"
-		@click="onClickShowModel('ruleValue')"
-	>
-		<template v-slot:com>
-			<div class="widght_box">
-				<el-input
-					:disabled="disabled"
-					v-model="theValue"
-					clearable
-					@clear="isClearInput"
-					@change="inputChange"
-					:placeholder="placeholder || '多个值请用逗号或者空格分隔'"
-					@keyup.enter="keyUpEnter"
-				>
-					<template v-slot:suffix>
-            <svg-icon
-              :color="disabled ? '#a8abb2' : '#666666'"
-              iconName="icon-fangda"
-              :className="`button_point ${disabled ? 'button_point_disabled' : ''}`"
-              @click="onClickShowModel('theValue')"
-            ></svg-icon>
-					</template>
-				</el-input>
-				<!-- dialog多单号弹窗 -->
-				<el-dialog
-					v-model="modelVisible"
-					append-to-body
-					:title="(modelTarget === 'ruleValue' && modelProps.ruleTitle) || `多单号查询${modelTarget === 'ruleValue' ? ' - 排除项' : '' }`"
-					width="800px"
-					:top="dialogTop"
-					:before-close="beforeClose"
-					class="number-list-dialog"
-				>
-					<div className="dialog_title_box">
-						<div className="title_tips">
-							如需同时使用多个值进行查询，请使用逗号,空格或换行分隔{{
-								modelProps?.maxLength > 0
-									? ` --- 最多可以输入${modelProps.maxLength}行`
-									: ''
-							}}
-						</div>
-						<el-tooltip
-							class="box-item"
-							effect="dark"
-							content="格式化：移除字符前后空格，移除空白行，将逗号或者空格分隔转变为换行展示"
-							placement="top-end"
-						>
-							<at-button
-								type="plain"
-								@click="inputValue = formatting(inputValue)"
-								>数据格式化</at-button
+	<div class="search_number_list_content">
+		<InputAndButton
+			v-bind="{
+				isUse: !!modelProps.ruleOutKey,
+				disabled: disabled,
+				initValue: ruleValue,
+			}"
+			@click="onClickShowModel('ruleValue')"
+		>
+			<template v-slot:com>
+				<div class="widght_box">
+					<el-input
+						:disabled="disabled"
+						v-model="theValue"
+						clearable
+						@clear="isClearInput"
+						@change="inputChange"
+						:placeholder="placeholder || '多个值请用逗号或者空格分隔'"
+						@keyup.enter="keyUpEnter"
+					>
+						<template v-slot:suffix>
+							<svg-icon
+								:color="disabled ? '#a8abb2' : '#666666'"
+								iconName="icon-fangda"
+								:className="`button_point ${disabled ? 'button_point_disabled' : ''}`"
+								@click="onClickShowModel('theValue')"
+							></svg-icon>
+						</template>
+					</el-input>
+					<!-- dialog多单号弹窗 -->
+					<el-dialog
+						v-model="modelVisible"
+						append-to-body
+						:title="(modelTarget === 'ruleValue' && modelProps.ruleTitle) || `多单号查询${modelTarget === 'ruleValue' ? ' - 排除项' : '' }`"
+						width="800px"
+						:top="dialogTop"
+						:before-close="beforeClose"
+						class="number-list-dialog"
+					>
+						<div className="dialog_title_box">
+							<div className="title_tips">
+								如需同时使用多个值进行查询，请使用逗号,空格或换行分隔{{
+									modelProps?.maxLength > 0
+										? ` --- 最多可以输入${modelProps.maxLength}行`
+										: ''
+								}}
+							</div>
+							<el-tooltip
+								class="box-item"
+								effect="dark"
+								content="格式化：移除字符前后空格，移除空白行，将逗号或者空格分隔转变为换行展示"
+								placement="top-end"
 							>
-						</el-tooltip>
-					</div>
-					<div class="modal_contant">
-						<el-input
-							placeholder="请输入"
-							type="textarea"
-							v-model="inputValue"
-							:rows="10"
-						>
-						</el-input>
-						<div class="count_box">
-							行数: {{ countsNumber }}
+								<at-button
+									type="plain"
+									@click="inputValue = formatting(inputValue)"
+									>数据格式化</at-button
+								>
+							</el-tooltip>
 						</div>
-					</div>
-					<template #footer>
-						<span class="dialog-footer">
-							<at-button type="primary" @click="onModelSubmit">确认</at-button>
-							<at-button class="mrgl-10" @click="beforeClose">取消</at-button>
-						</span>
-					</template>
-				</el-dialog>
-			</div>
-		</template>
-	</InputAndButton>
+						<div class="modal_contant">
+							<el-input
+								placeholder="请输入"
+								type="textarea"
+								v-model="inputValue"
+								:rows="10"
+							>
+							</el-input>
+							<div class="count_box">
+								行数: {{ countsNumber }}
+							</div>
+						</div>
+						<template #footer>
+							<span class="dialog-footer">
+								<at-button type="primary" @click="onModelSubmit">确认</at-button>
+								<at-button class="mrgl-10" @click="beforeClose">取消</at-button>
+							</span>
+						</template>
+					</el-dialog>
+				</div>
+			</template>
+		</InputAndButton>
+	</div>
 </template>
 
 <script lang="ts">
@@ -238,12 +240,15 @@ export default defineComponent({
 		AtButton: defineAsyncComponent(
 			() => import('../button/button.vue')
 		),
+		SvgIcon: defineAsyncComponent(
+      () => import("../icon/index.vue")
+    ),
 	},
 });
 </script>
 
 <style scoped lang="less">
-.widght_box {
+.search_number_list_content {
 	width: 100%;
 }
 .title_tips {

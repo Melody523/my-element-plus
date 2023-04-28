@@ -39,11 +39,6 @@
 							:class="` ${
 								hasToolsCol ? 'my_item_box' : 'my_item_box_no_search'
 							} ${Object.keys(formRules)?.length > 0 ?  'rules_item_box' : ''}`"
-							:style="
-								formItemMrgb || formItemMrgb === 0
-									? `margin-bottom: ${formItemMrgb}px`
-									: ''
-							"
 						>
 							<!-- 组件注入 -->
 							<!-- key 是为了ruleDisabled 改变的时候重新加载 formItem  -->
@@ -101,7 +96,7 @@
 									filterable
 									:clearable="!item.noClearable"
 									:placeholder="item.placeholder || '请选择'"
-									@clear="item.selectClear ? item.selectClear() : delete form[item.key]"
+									@clear="clearSelect(item)"
 									@change="
 										(val) => {
 											if (onChangeFlag) return;
@@ -417,7 +412,7 @@ export default defineComponent({
 			type: Array as () => Array<any>,
 			default: () => [],
 		},
-		// 每行数量
+		// 每行表单项数量
 		rowNumber: {
 			type: Number,
 			default: 3,
@@ -447,20 +442,6 @@ export default defineComponent({
 			type: Object as () => any,
 			default: () => ({}),
 		},
-		initForm: {
-			type: Object as () => any,
-			default: () => ({}),
-		},
-		// 自定义每个表单项下边距
-		formItemMrgb: {
-			type: Number,
-			default: null,
-		},
-		// 单据属性模板url
-		extendAttrUrl: {
-			type: String,
-			default: '',
-		},
 		fetchUrl: {
       type: Function as PropType<(data: any) => Promise<any>>,
     },
@@ -471,10 +452,6 @@ export default defineComponent({
     renderFunc: {
       type: Function,
       default: ((res:any)=>res)
-    },
-		callbackFunc: {
-      type: Function||null,
-      default: null
     },
 		// 标题类型
 		titleType: {
@@ -599,7 +576,7 @@ export default defineComponent({
 			if (callback) {
 				callback();
 			}
-			emit('onSearchClear', { key });
+			emit('onSearchClear', arg, key, callback);
 		};
 
 		// 除去下拉多选可能出现的空数组默认值
@@ -639,19 +616,12 @@ export default defineComponent({
         if (props.fetchUrl) {
 					const res = await props.fetchUrl(props.params);
 					state.form = props.renderFunc(res || {});
-					props.callbackFunc && props.callbackFunc(res || {});
 				}
       } catch(error) {
         console.log(error,'error')
       }
     };
 		props.fetchUrl && getData();
-
-		watchEffect(() => {
-			if (!props.fetchUrl && props.initForm && Object.keys(props.initForm)?.length > 0) {
-				state.form = { ...props.initForm };
-			}
-		});
 
 		const firstDetailTitleIndex: any = computed(() => {
 			return props.formList.findIndex(item => (item.contant) )
@@ -660,6 +630,9 @@ export default defineComponent({
 		const keyUpEnter = () => {
 			emit('inputEnter');
 		};
+		const clearSelect = (item: any) => {
+			item.selectClear ? item.selectClear() : delete state.form[item.key]
+		}
 		return {
 			...toRefs(state),
 			showList,
@@ -672,6 +645,7 @@ export default defineComponent({
 			isEmpty,
 			firstDetailTitleIndex,
 			getData,
+			clearSelect,
 		};
 	},
 	components: {
@@ -764,8 +738,8 @@ export default defineComponent({
 	}
 }
 :deep(.el-select__tags) {
-	width: 101% !important;
-	max-width: 101% !important;
+	width: calc(100%-30px) !important;
+	max-width: calc(100%-30px) !important;
 	z-index: 1;
 }
 :deep(.el-form-item--default) {

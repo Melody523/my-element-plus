@@ -70,12 +70,27 @@ export declare const Selection: import("../utils/withinstall").SFCWithInstall<im
         type: FunctionConstructor;
         default: (res: any) => any;
     };
-    params: {
+    initValue: {
+        type: ObjectConstructor;
+        default: {};
+    };
+    defaultValue: {
+        type: ObjectConstructor;
+        default: {};
+    };
+    hasPagination: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    initialDataSource: {
+        type: () => any[];
+        default: () => never[];
+    };
+    staticData: {
         type: ObjectConstructor;
         default: {};
     };
 }, {
-    staticData: any;
     handleClose: (action: string) => void;
     getData: () => Promise<void>;
     resetInfo: () => void;
@@ -87,6 +102,25 @@ export declare const Selection: import("../utils/withinstall").SFCWithInstall<im
     removeSelectData: (row: any) => void;
     rowClick: (rowData: any) => void;
     toFirstTab: () => void;
+    initValue: import("vue").Ref<Record<string, any>>;
+    "onUpdate:modelValue": import("vue").Ref<((...args: any[]) => any) | undefined>;
+    modelValue: import("vue").Ref<boolean>;
+    rowKey: import("vue").Ref<string>;
+    checkTable: import("vue").Ref<any[]>;
+    fetchUrl: import("vue").Ref<((data: any) => Promise<any>) | undefined>;
+    renderFunc: import("vue").Ref<Function>;
+    dealFetchFunc: import("vue").Ref<Function>;
+    initialDataSource: import("vue").Ref<any[]>;
+    staticData: import("vue").Ref<Record<string, any>>;
+    defaultValue: import("vue").Ref<Record<string, any>>;
+    onCustHandle: import("vue").Ref<((...args: any[]) => any) | undefined>;
+    selectKey: import("vue").Ref<string>;
+    title: import("vue").Ref<string>;
+    showFormList: import("vue").Ref<any>;
+    showTableList: import("vue").Ref<any>;
+    isRadio: import("vue").Ref<boolean>;
+    confirmClose: import("vue").Ref<boolean>;
+    hasPagination: import("vue").Ref<boolean>;
     formList: import("vue").Ref<any[]>;
     formListBackup: import("vue").Ref<any[]>;
     form: import("vue").Ref<any>;
@@ -102,6 +136,7 @@ export declare const Selection: import("../utils/withinstall").SFCWithInstall<im
     activeName: import("vue").Ref<string>;
     multipleTable: import("vue").Ref<any>;
     dialogRef: import("vue").Ref<any>;
+    hasInitialDataSource: import("vue").Ref<any>;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("update:modelValue" | "custHandle")[], "update:modelValue" | "custHandle", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     modelValue: {
         type: BooleanConstructor;
@@ -174,7 +209,23 @@ export declare const Selection: import("../utils/withinstall").SFCWithInstall<im
         type: FunctionConstructor;
         default: (res: any) => any;
     };
-    params: {
+    initValue: {
+        type: ObjectConstructor;
+        default: {};
+    };
+    defaultValue: {
+        type: ObjectConstructor;
+        default: {};
+    };
+    hasPagination: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    initialDataSource: {
+        type: () => any[];
+        default: () => never[];
+    };
+    staticData: {
         type: ObjectConstructor;
         default: {};
     };
@@ -182,17 +233,21 @@ export declare const Selection: import("../utils/withinstall").SFCWithInstall<im
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onCustHandle?: ((...args: any[]) => any) | undefined;
 }, {
+    initValue: Record<string, any>;
     modelValue: boolean;
     rowKey: string;
     checkTable: any[];
     renderFunc: Function;
     dealFetchFunc: Function;
-    params: Record<string, any>;
+    initialDataSource: any[];
+    staticData: Record<string, any>;
+    defaultValue: Record<string, any>;
     selectKey: string;
     title: string;
     showFormList: any;
     showTableList: any;
     isRadio: boolean;
     confirmClose: boolean;
+    hasPagination: boolean;
 }>>;
 export default Selection;

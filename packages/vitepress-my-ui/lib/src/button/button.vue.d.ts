@@ -1,7 +1,7 @@
 declare const _sfc_main: import("vue").DefineComponent<{
     /**
      * 按钮类型
-     * default | danger | primary | plain | text |warning
+     * default | danger | primary | plain | text | warning
      */
     type: {
         type: StringConstructor;
@@ -39,14 +39,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
         default: boolean;
     };
     /**
-     * icon名称 当前变量仅支持fa和svg-icon
+     * icon名称 当前变量仅支持svg-icon
      */
     icon: {
         type: StringConstructor;
         default: null;
     };
     /**
-     * 引用icon的类型 暂时支持svg(svg-icon)两种方式
+     * 引用icon的类型 暂时支持svg(svg-icon)和slot
      */
     iconType: {
         type: StringConstructor;
@@ -73,7 +73,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "click"[], "click", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     /**
      * 按钮类型
-     * default | danger | primary | plain | text |warning
+     * default | danger | primary | plain | text | warning
      */
     type: {
         type: StringConstructor;
@@ -111,14 +111,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
         default: boolean;
     };
     /**
-     * icon名称 当前变量仅支持fa和svg-icon
+     * icon名称 当前变量仅支持svg-icon
      */
     icon: {
         type: StringConstructor;
         default: null;
     };
     /**
-     * 引用icon的类型 暂时支持svg(svg-icon)两种方式
+     * 引用icon的类型 暂时支持svg(svg-icon)和slot
      */
     iconType: {
         type: StringConstructor;

@@ -21,6 +21,8 @@
         @visible-change="visibleChange"
         :disabled-date="disabledDate"
         :editable="false"
+        :disabled="disabled"
+        :clearable="clearable"
       >
       </el-date-picker>
     </div>
@@ -57,6 +59,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    clearable: {
+      type: Boolean,
+      default: true,
+    }
   },
   setup(props, { emit }) {
     const { globalProperties } = useCurrentInstance();
@@ -183,7 +193,6 @@ export default defineComponent({
         default:
           break;
       }
-
       emit("update:modelValue", outPutValue);
     };
     // 监听外部数据变化，同步组件内部状态
@@ -214,15 +223,15 @@ export default defineComponent({
                 break;
             }
           } else {
-            if (newValue[0] === "") {
-              checkBoxControl("dateBefore");
-              state.value = newValue[1];
-            } else if (newValue[1] === "") {
-              checkBoxControl("dateAfter");
-              state.value = newValue[0];
-            } else if (newValue[0] && newValue[1]) {
-              checkBoxControl("daterange");
+            if (newValue[0] && newValue[1]) {
+              checkBoxControl('daterange');
               state.value = newValue;
+            } else if (newValue[0]) {
+              checkBoxControl('dateAfter');
+              state.value = newValue[0];
+            } else if (newValue[1]) {
+              checkBoxControl('dateBefore');
+              state.value = newValue[1];
             }
           }
         } else {

@@ -1,8 +1,6 @@
 <template>
   <div
-    :class="`menu_button_box ${buttonType}_button_box ${size}_button ${dropdownModel}_button_model ${
-      useType ? 'useType_style' : ''
-    } ${disabled ? 'is_disabled' : ''}`"
+    :class="`menu_button_box ${buttonType}_button_box ${size}_button ${dropdownModel}_button_model ${disabled ? 'is_disabled' : ''}`"
   >
     <div class="other_button_title_box">
       <el-button
@@ -16,7 +14,7 @@
     <div class="dropdown_button_box">
       <el-dropdown
         @command="command"
-        :trigger="trigger || 'hover'"
+        :trigger="trigger"
         placement="bottom"
         @visible-change="controlDropdown"
         :disabled="disabled"
@@ -54,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { toRefs, defineComponent, reactive } from "vue";
+import { toRefs, defineComponent, reactive, defineAsyncComponent } from "vue";
 
 interface ICompStateData {
   isDropdown: boolean;
@@ -91,7 +89,7 @@ export default defineComponent({
     },
     trigger: {
       type: String,
-      default: "",
+      default: "hover",
     },
     // 下拉按钮的类型 same | other
     dropdownModel: {
@@ -106,13 +104,6 @@ export default defineComponent({
     size: {
       type: String,
       default: "large",
-    },
-    /**
-     * 特殊枚举给搜索组件提供特殊样式
-     */
-    useType: {
-      type: Boolean,
-      default: false,
     },
   },
   setup(props, { emit }) {
@@ -137,7 +128,11 @@ export default defineComponent({
       controlDropdown,
     };
   },
-  components: {},
+  components: {
+    SvgIcon: defineAsyncComponent(
+      () => import("../icon/index.vue")
+    ),
+  },
 });
 </script>
 
@@ -180,21 +175,6 @@ export default defineComponent({
   --menu-border-hover: none;
   --menu-color-hover: #333333;
   --menu-background-color-hover: rgba(0, 0, 0, 0);
-}
-
-// 特殊類型，只提供給搜索按鈕我的模板使用
-.useType_style {
-  --menu-border: 1px solid #cccccc;
-  --menu-color: #333333;
-  --menu-background-color: #ffffff;
-
-  --menu-border-hover: 1px solid #cccccc;
-  --menu-color-hover: #333333;
-  --menu-background-color-hover: #ffffff;
-
-  --menu-font-size: 12px !important;
-  --menu-default-width: 66px !important;
-  --menu-font-line-height: 20px !important;
 }
 
 .same_button_model {

@@ -1,64 +1,66 @@
 <template>
-  <InputAndButoon
-    v-bind="{
-      isUse: !!initItem.ruleOutKey,
-      disabled: disabled,
-      initValue: ruleModel,
-    }"
-    @click="onDialogShow(initItem.ruleOutKey, initItem)"
-  >
-    <template v-slot:com>
-      <div class="widght_box">
-        <el-select
-          :model-value="inputValue"
-          :multiple="initMultiple"
-          filterable
-          :value-key="rowKey"
-          remote
-          :remote-method="onSearch"
-          :loading="loading"
-          :disabled="disabled"
-          :clearable="true"
-          :placeholder="`${initItem.placeholder || '请输入关键词搜索或选择'}`"
-          @change="onSelect"
-          :collapse-tags="true"
-          :max-collapse-tags="1"
-          :collapse-tags-tooltip="true"
-          @clear="
-            () => {
-              !disabled &&
-                onSearchClear(
-                  initItem.clearData,
-                  initItem.key,
-                  initItem.callback
-                );
-            }
-          "
-        >
-          <el-option
-            v-for="item in options"
-            :key="item[rowKey]"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <div class="control_button">
-          <svg-icon
-            :color="disabled ? '#a8abb2' : '#666666'"
-            iconName="icon-a-xuanzeqi"
-            :className="`button_padding button_point ${
-              disabled ? 'button_point_disabled' : ''
-            }`"
-            @click.stop="
+  <div class="search_select_content">
+    <InputAndButoon
+      v-bind="{
+        isUse: !!initItem.ruleOutKey,
+        disabled: disabled,
+        initValue: ruleModel,
+      }"
+      @click="onDialogShow(initItem.ruleOutKey, initItem)"
+    >
+      <template v-slot:com>
+        <div class="widght_box">
+          <el-select
+            :model-value="inputValue"
+            :multiple="initMultiple"
+            filterable
+            :value-key="rowKey"
+            remote
+            :remote-method="onSearch"
+            :loading="loading"
+            :disabled="disabled"
+            :clearable="true"
+            :placeholder="`${initItem.placeholder || '请输入关键词搜索或选择'}`"
+            @change="onSelect"
+            :collapse-tags="true"
+            :max-collapse-tags="1"
+            :collapse-tags-tooltip="true"
+            @clear="
               () => {
-                !disabled && onDialogShow(initItem.key, initItem);
+                !disabled &&
+                  onSearchClear(
+                    initItem.clearData,
+                    initItem.key,
+                    initItem.callback
+                  );
               }
             "
-          ></svg-icon>
+          >
+            <el-option
+              v-for="item in options"
+              :key="item[rowKey]"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <div class="control_button">
+            <svg-icon
+              :color="disabled ? '#a8abb2' : '#666666'"
+              iconName="icon-a-xuanzeqi"
+              :className="`button_padding button_point ${
+                disabled ? 'button_point_disabled' : ''
+              }`"
+              @click.stop="
+                () => {
+                  !disabled && onDialogShow(initItem.key, initItem);
+                }
+              "
+            ></svg-icon>
+          </div>
         </div>
-      </div>
-    </template>
-  </InputAndButoon>
+      </template>
+    </InputAndButoon>
+  </div>
 </template>
 
 <script lang="ts">
@@ -233,7 +235,6 @@ export default defineComponent({
       let params = {
         ...props.pagination,
         ...props.params,
-        ...(props.dealFetchFunc ? props.dealFetchFunc() : {}),
       };
       return params;
     };
@@ -248,7 +249,7 @@ export default defineComponent({
         state.query = query;
         state.loading = true;
         props
-          .fetchUrl(props.dealFetchFunc(getParams))
+          .fetchUrl(props.dealFetchFunc(getParams()))
           .then((res: any) => {
             if (query === state.query) {
               const { data } = props.renderFunc(res);
@@ -384,11 +385,17 @@ export default defineComponent({
     InputAndButoon: defineAsyncComponent(
       () => import("../input-and-button/index.vue")
     ),
+    SvgIcon: defineAsyncComponent(
+      () => import("../icon/index.vue")
+    ),
   },
 });
 </script>
 
 <style scoped lang="less">
+.search_select_content {
+  width: 100%;
+}
 .widght_box {
   width: 100%;
   display: flex;

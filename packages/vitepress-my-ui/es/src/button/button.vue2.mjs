@@ -1,11 +1,11 @@
-import { defineComponent as n, reactive as f, useSlots as i, toRefs as t } from "vue";
-const u = n({
+import { defineComponent as a, reactive as i, useSlots as s, toRefs as t, defineAsyncComponent as f } from "vue";
+const d = a({
   name: "Button",
   emits: ["click"],
   props: {
     /**
      * 按钮类型
-     * default | danger | primary | plain | text |warning
+     * default | danger | primary | plain | text | warning
      */
     type: {
       type: String,
@@ -43,14 +43,14 @@ const u = n({
       default: !1
     },
     /**
-     * icon名称 当前变量仅支持fa和svg-icon
+     * icon名称 当前变量仅支持svg-icon
      */
     icon: {
       type: String,
       default: null
     },
     /**
-     * 引用icon的类型 暂时支持svg(svg-icon)两种方式
+     * 引用icon的类型 暂时支持svg(svg-icon)和slot
      */
     iconType: {
       type: String,
@@ -64,22 +64,27 @@ const u = n({
       default: !1
     }
   },
-  setup(l, { emit: a }) {
-    let e = f({
-      slotDefault: !!i().default
+  setup(l, { emit: o }) {
+    let e = i({
+      slotDefault: !!s().default
       // 判断是否传入了 default slot
     });
-    const o = () => {
-      a("click");
+    const n = () => {
+      o("click");
     };
     return {
       ...t(e),
       ...t(l),
       state: e,
-      onClick: o
+      onClick: n
     };
+  },
+  components: {
+    SvgIcon: f(
+      () => import("../icon/index.vue.mjs")
+    )
   }
 });
 export {
-  u as default
+  d as default
 };

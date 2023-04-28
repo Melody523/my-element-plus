@@ -1,13 +1,12 @@
-import { defineComponent as r, reactive as d, ref as h, computed as n, onMounted as w, toRefs as b, defineAsyncComponent as S } from "vue";
-import y from "../rc-form/index.vue.mjs";
-import { deepClone as g } from "../utils/utils.mjs";
-const D = r({
+import { defineComponent as d, reactive as h, ref as w, computed as n, onMounted as S, toRefs as u, defineAsyncComponent as b } from "vue";
+import g from "../rc-form/index.vue.mjs";
+import { deepClone as y } from "../utils/utils.mjs";
+const D = d({
   name: "SearchForm",
   emits: [
     "onSearchSubmit",
     "onDialogShow",
     "custDialog",
-    "firstSearch",
     "onReset",
     "update:modelValue"
   ],
@@ -44,71 +43,77 @@ const D = r({
       type: Number,
       default: 3
     },
+    // 操作按钮是否禁用
     toolsListDisabled: {
       type: Boolean,
       default: !1
     },
+    // 是否展开所有表单项
     show: {
       type: Boolean,
-      default: !1
+      default: !0
+    },
+    // 点击搜索后是否自动收起表单项
+    keepShow: {
+      type: Boolean,
+      default: !0
     },
     maxHeight: {
       type: [String, Number],
       default: "400"
     }
   },
-  setup(o, { emit: a }) {
-    let t = d({
+  setup(t, { emit: a }) {
+    let o = h({
       form: {},
-      show: o.show,
-      RCFormRef: h(null)
+      show: t.show,
+      RCFormRef: w(null)
     });
-    const u = () => {
-      t.RCFormRef.submit().then((e) => {
-        t.show = !1, a("onSearchSubmit", e);
+    const s = () => {
+      o.RCFormRef.submit().then((e) => {
+        !t.keepShow && (o.show = !1), a("onSearchSubmit", e);
       }).catch((e) => {
         console.log(e);
       });
     };
-    t.form = n({
+    o.form = n({
       // 重新定义
-      get: () => o.modelValue,
+      get: () => t.modelValue,
       set: (e) => a("update:modelValue", e)
     });
-    const s = () => {
-      console.log("onReset", o.defaultValue);
-      const e = o.defaultValue ? g(o.defaultValue) : {};
-      t.form = e, a("onReset");
-    }, f = (e) => {
-      e || e === !1 ? t.show = e : t.show = !t.show;
+    const f = () => {
+      o.form = y(t.defaultValue), a("onReset");
+    }, m = (e) => {
+      o.show = !o.show;
     };
-    w(async () => {
+    S(async () => {
       const e = {
-        ...t.form,
-        ...o.initValue,
-        ...o.defaultValue
+        ...o.form,
+        ...t.initValue,
+        ...t.defaultValue
       };
-      t.form = e;
+      o.form = e;
     });
-    const m = (e, l = {}) => {
+    const r = (e, l = {}) => {
       a("onDialogShow", e, l);
-    }, c = (e, l) => {
+    }, i = (e, l) => {
       a("custDialog", e, l);
-    }, i = n(() => o.formList.filter((e) => e.isShow).length < o.rowNumber);
+    }, c = n(() => t.formList.filter((e) => e.isShow).length >= t.rowNumber);
     return {
-      ...b(t),
-      onSearchSubmit: u,
-      onReset: s,
-      onDialogShow: m,
-      custDialog: c,
-      changeShow: f,
-      hasShow: i
+      ...u(t),
+      ...u(o),
+      onSearchSubmit: s,
+      onReset: f,
+      onDialogShow: r,
+      custDialog: i,
+      changeShow: m,
+      hasShow: c
     };
   },
   components: {
-    RCForm: y,
+    RCForm: g,
     // 同步引入
-    ToolsList: S(
+    ToolsList: b(
       () => import("../tools-list/index.vue.mjs")
     )
   }

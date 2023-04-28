@@ -9,7 +9,7 @@
 				staticData,
 				labelWidth,
 				hasToolsCol: true,
-				show: hasShow ? false : show,
+				show: !hasShow ? false : show,
 			}"
 			v-model="form"
 			@onDialogShow="onDialogShow"
@@ -19,24 +19,26 @@
 			<template v-slot:searchButton>
 				<ToolsList
 					v-bind="{
-						onReset,
-						onSearchSubmit,
-						show: hasShow ? false : show,
-						changeShow: hasShow ? false : changeShow,
+						show,
 						disabled: toolsListDisabled,
+						hasShow
 					}"
+					@onReset="onReset"
+					@onSearchSubmit="onSearchSubmit"
+					@changeShow="changeShow"
 				/>
 			</template>
 		</RCForm>
-		<div v-show="!hasShow && show" class="under_stick_control">
+		<div v-show="hasShow && show" class="under_stick_control">
 			<ToolsList
 				v-bind="{
-					onReset,
-					onSearchSubmit,
-					show: hasShow ? false : show,
-					changeShow: hasShow ? false : changeShow,
+					show,
 					disabled: toolsListDisabled,
+					hasShow
 				}"
+				@onReset="onReset"
+				@onSearchSubmit="onSearchSubmit"
+				@changeShow="changeShow"
 			/>
 		</div>
 	</div>
@@ -62,7 +64,6 @@ export default defineComponent({
 		'onSearchSubmit',
 		'onDialogShow',
 		'custDialog',
-		'firstSearch',
 		'onReset',
 		'update:modelValue',
 	],
@@ -99,13 +100,20 @@ export default defineComponent({
 			type: Number,
 			default: 3,
 		},
+		// 操作按钮是否禁用
 		toolsListDisabled: {
 			type: Boolean,
 			default: false,
 		},
+		// 是否展开所有表单项
 		show: {
 			type: Boolean,
-			default: false,
+			default: true,
+		},
+		// 点击搜索后是否自动收起表单项
+		keepShow: {
+			type: Boolean,
+			default: true,
 		},
 		maxHeight: {
 			type: [String, Number],
@@ -124,7 +132,7 @@ export default defineComponent({
 		const onSearchSubmit = () => {
 			state.RCFormRef.submit()
 				.then((res: any) => {
-					state.show = false;
+					!props.keepShow && (state.show = false);
 					emit('onSearchSubmit', res);
 				})
 				.catch((error: any) => {
@@ -138,21 +146,13 @@ export default defineComponent({
 		
 		// 点击重置
 		const onReset = () => {
-			console.log('onReset', props.defaultValue);
-			const newObj = props.defaultValue
-				? deepClone(props.defaultValue)
-				: {};
 			// 如果存在祖宗组件留下的方法则执行,否则直接给子组件赋值
-			state.form = newObj
+			state.form = deepClone(props.defaultValue)
 			emit('onReset');
 		};
 
 		const changeShow = (target?: boolean) => {
-			if (target || target === false) {
-				state.show = target;
-			} else {
-				state.show = !state.show;
-			}
+			state.show = !state.show;
 		};
 
 		onMounted(async () => {
@@ -168,17 +168,14 @@ export default defineComponent({
 		const onDialogShow = (key: any, row = {}) => {
 			emit('onDialogShow', key, row);
 		};
-		const custDialog = (data: any, key: string) => {
-			emit('custDialog', data, key);
+		const custDialog = (list: any, key: string) => {
+			emit('custDialog', list, key);
 		};
 
-		const hasShow = computed(() => {
-			return (
-				props.formList.filter((item) => item.isShow).length < props.rowNumber
-			);
-		});
+		const hasShow = computed(() => props.formList.filter((item) => item.isShow).length >= props.rowNumber);
 
 		return {
+			...toRefs(props),
 			...toRefs(state),
 			onSearchSubmit,
 			onReset,

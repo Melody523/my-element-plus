@@ -6,7 +6,7 @@
       }`"
       @click="
         () => {
-          !disabled && onReset();
+          !disabled && emit('onReset');
         }
       "
     >
@@ -18,7 +18,7 @@
       }`"
       @click="
         () => {
-          !disabled && onSearchSubmit();
+          !disabled && emit('onSearchSubmit');
         }
       "
     >
@@ -28,16 +28,17 @@
       :class="`tool_button show_control_icon mrgr_12 ${
         !show ? 'transform_rotate' : ''
       } `"
-      v-if="changeShow"
+      v-if="hasShow"
       @click="
         () => {
-          !disabled && changeShow(!show);
+          !disabled && emit('changeShow');
         }
       "
     >
       <svg-icon
         :class="`${disabled ? 'is_disabled' : ''}`"
         iconName="icon-jiantou"
+        color="#999"
       ></svg-icon>
     </div>
   </div>
@@ -53,25 +54,21 @@ import {
 } from "vue";
 export default defineComponent({
   name: "ToolsList",
-  emits: ["update:modelValue"],
-  props: [
-    "onReset",
-    "onSearchSubmit",
-    "changeShow",
-    "show",
-    "disabled",
-  ],
+  emits: ["update:modelValue", "onReset", "onSearchSubmit", "changeShow"],
+  props: ["show", "hasShow", "disabled"],
   setup(_, { emit }) {
-    let state = reactive<any>({
-      
-    });
+    let state = reactive<any>({});
 
     return {
       ...toRefs(state),
+      emit,
     };
   },
   components: {
     MenuButton: defineAsyncComponent(() => import("../menu-button/index.vue")),
+    SvgIcon: defineAsyncComponent(
+      () => import("../icon/index.vue")
+    ),
   },
 });
 </script>
@@ -98,7 +95,6 @@ export default defineComponent({
   border: 1px solid #cccccc;
   color: #333333;
 }
-
 .search_button {
   width: 60px;
   background-color: #333333;

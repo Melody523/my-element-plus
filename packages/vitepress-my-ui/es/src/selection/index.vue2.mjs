@@ -1,7 +1,6 @@
-import { defineComponent as K, reactive as B, ref as u, watch as g, toRefs as y, defineAsyncComponent as h } from "vue";
-import { getCommonState as j, deepClone as m } from "../utils/utils.mjs";
-let O = {};
-const x = K({
+import { defineComponent as O, reactive as R, ref as b, computed as B, watch as S, toRefs as y, defineAsyncComponent as p } from "vue";
+import { getCommonState as K, deepClone as s } from "../utils/utils.mjs";
+const A = O({
   name: "Selection",
   emits: ["update:modelValue", "custHandle"],
   props: {
@@ -23,12 +22,18 @@ const x = K({
     showFormList: {
       // 显示的form查询条件
       type: Object,
-      default: { code: { key: "code", label: "编码", isShow: !0, type: "input" }, name: { key: "name", label: "名称", isShow: !0, type: "input" } }
+      default: {
+        code: { key: "code", label: "编码", isShow: !0, type: "input" },
+        name: { key: "name", label: "名称", isShow: !0, type: "input" }
+      }
     },
     showTableList: {
       // 显示的table列
       type: Object,
-      default: { code: { key: "code", label: "编码", isShow: !0 }, name: { key: "name", label: "名称", isShow: !0 } }
+      default: {
+        code: { key: "code", label: "编码", isShow: !0 },
+        name: { key: "name", label: "名称", isShow: !0 }
+      }
     },
     isRadio: {
       // 是否单选 默认为单选
@@ -63,14 +68,34 @@ const x = K({
       type: Function,
       default: (a) => a
     },
-    // 请求params
-    params: {
+    // 初始参数,重置后清空
+    initValue: {
+      type: Object,
+      default: {}
+    },
+    // 默认参数,重置后回填
+    defaultValue: {
+      type: Object,
+      default: {}
+    },
+    // 是否有翻页
+    hasPagination: {
+      type: Boolean,
+      default: !0
+    },
+    // 表格初始值
+    initialDataSource: {
+      type: Array,
+      default: () => []
+    },
+    // 下拉选择框静态数据
+    staticData: {
       type: Object,
       default: {}
     }
   },
-  setup(a, { emit: s }) {
-    const { hooksCommonState: l, currentChange: p, sizeChange: S } = j(), t = B({
+  setup(a, { emit: c }) {
+    const { hooksCommonState: n, currentChange: D, sizeChange: T } = K(), e = R({
       formList: [],
       formListBackup: [],
       tableList: [],
@@ -78,90 +103,137 @@ const x = K({
       form: {},
       tableData: [],
       selectTableData: [],
-      searchFormRef: u(null),
-      multipleTable: u(null),
-      dialogWidth: 920,
+      searchFormRef: b(null),
+      multipleTable: b(null),
+      dialogWidth: 1e3,
       extendAttributes: [],
       disabledId: "",
       dialogTop: "8vh",
       activeName: "first",
-      dialogRef: u("")
-    }), T = (e) => {
-      e === "confirm" ? (s("custHandle", { visible: !1, list: t.selectTableData || [], type: a.selectKey }), a.confirmClose && (s("update:modelValue", !1), t.multipleTable.clearSelection(), t.form = {})) : (s("update:modelValue", !1), t.multipleTable.clearSelection(), t.form = {});
-    }, L = (e) => {
-      a.isRadio ? (e && Object.keys(e).length > 0 && (s("custHandle", { visible: !1, list: [e] || [], rowData: e, type: a.selectKey }), s("update:modelValue", !1), t.selectTableData = [], t.multipleTable.clearSelection()), t.form = {}) : t.multipleTable.toggleRowSelection(e);
-    }, w = (e) => {
-      t.selectTableData = e;
-    }, F = (e) => {
-      t.multipleTable.toggleRowSelection(t.multipleTable.getSelectionRows().find((o) => o[a.rowKey] == e[a.rowKey]), !1), t.selectTableData = t.selectTableData.filter((o) => o[a.rowKey] !== e[a.rowKey]);
-    }, d = () => {
-      l.pager.currentPage = 1, r();
-    }, D = () => {
-      t.form = {}, d();
-    }, r = async () => {
+      dialogRef: b(""),
+      hasInitialDataSource: !1
+    });
+    e.hasInitialDataSource = B(
+      () => {
+        var t;
+        return ((t = a.initialDataSource) == null ? void 0 : t.length) > 0;
+      }
+    );
+    const L = (t) => {
+      t === "confirm" ? (c("custHandle", {
+        visible: !1,
+        list: e.selectTableData || [],
+        type: a.selectKey
+      }), a.confirmClose && (c("update:modelValue", !1), e.multipleTable.clearSelection(), e.form = {})) : (c("update:modelValue", !1), e.multipleTable.clearSelection(), e.form = {});
+    }, w = (t) => {
+      a.isRadio ? (t && Object.keys(t).length > 0 && (c("custHandle", {
+        visible: !1,
+        list: [t] || [],
+        rowData: t,
+        type: a.selectKey
+      }), c("update:modelValue", !1), e.selectTableData = [], e.multipleTable.clearSelection()), e.form = {}) : e.multipleTable.toggleRowSelection(t);
+    }, F = (t) => {
+      e.selectTableData = t;
+    }, C = (t) => {
+      e.multipleTable.toggleRowSelection(
+        e.multipleTable.getSelectionRows().find((o) => o[a.rowKey] == t[a.rowKey]),
+        !1
+      ), e.selectTableData = e.selectTableData.filter(
+        (o) => o[a.rowKey] !== t[a.rowKey]
+      );
+    }, u = () => {
+      e.tableData = s(a.initialDataSource).filter(
+        (t) => {
+          var o;
+          return (o = Object.keys(e.form)) == null ? void 0 : o.every((l) => ["string"].includes(typeof e.form[l]) ? t[l].includes(e.form[l]) : ["object"].includes(typeof e.form[l]) ? e.form[l].includes(t[l]) : t[l] == e.form[l]);
+        }
+      );
+    }, h = () => {
+      e.hasInitialDataSource ? u() : (n.pager.currentPage = 1, f());
+    }, k = () => {
+      e.form = { ...a.defaultValue }, e.hasInitialDataSource ? u() : h();
+    }, f = async () => {
       if (a.fetchUrl)
         try {
-          let e = m(t.form);
-          l.tableLoading = !0;
-          const o = l.pager.currentPage, c = l.pager.pageSize;
-          t.formList.filter((i) => i.type === "modalTextarea").map((i) => {
-            e[i.key] && (e[i.key] = t.form[i.key].split(","));
-          }), a.fetchUrl(a.dealFetchFunc({ currentPage: o, pageSize: c, ...a.params, ...e })).then((i) => {
-            const { data: n, count: f } = a.renderFunc(i);
-            t.tableData = n, l.tableLoading = !1, l.pager.total = f;
+          let t = s(e.form);
+          n.tableLoading = !0;
+          const o = n.pager.currentPage, l = n.pager.pageSize;
+          e.formList.filter((i) => i.type === "modalTextarea").map((i) => {
+            t[i.key] && (t[i.key] = e.form[i.key].split(","));
           });
-        } catch (e) {
-          t.tableData = [], l.pager.total = 0, console.log("%c error", "color: chartreuse", e), l.tableLoading = !1;
+          let r = a.hasPagination ? {
+            currentPage: o,
+            pageSize: l,
+            ...t
+          } : { ...t };
+          a.fetchUrl(a.dealFetchFunc(r)).then((i) => {
+            const { data: d = [], count: m = 0 } = a.renderFunc(i);
+            e.tableData = d, n.tableLoading = !1, n.pager.total = m;
+          });
+        } catch (t) {
+          e.tableData = [], n.pager.total = 0, console.log("%c error", "color: chartreuse", t), n.tableLoading = !1;
         }
-    }, C = (e) => {
-      e == null || e.forEach((o) => {
-        t.multipleTable.toggleRowSelection(o);
-      }), t.selectTableData = e;
-    }, b = (e, o) => {
-      var i;
-      let c = [];
-      return (i = Object.keys(e)) == null || i.map((n) => {
-        if (typeof e[n] == "boolean" && e[n]) {
-          let f = o.find((v) => v.key == n) || [];
-          c.push({ ...f, isShow: !0 });
+    }, j = (t) => {
+      t == null || t.forEach((o) => {
+        e.multipleTable.toggleRowSelection(o);
+      }), e.selectTableData = t;
+    }, g = (t, o) => {
+      var r;
+      let l = [];
+      return (r = Object.keys(t)) == null || r.map((i) => {
+        if (typeof t[i] == "boolean" && t[i]) {
+          let d = o.find((m) => m.key == i) || [];
+          l.push({ ...d, isShow: !0 });
         } else
-          typeof e[n] == "object" && c.push({ isShow: !0, ...e[n] });
-      }), c;
-    }, k = () => {
-      t.activeName = "first";
-      const e = a.checkTable;
-      e.length > 0 && C(e), r(), t.tableData = [], l.pager.currentPage = 1, l.pager.total = 0;
-    }, R = () => {
-      t.activeName = "first";
+          typeof t[i] == "object" && l.push({ isShow: !0, ...t[i] });
+      }), l;
+    }, V = () => {
+      e.activeName = "first";
+      const t = a.checkTable;
+      t.length > 0 && j(t), e.form = { ...a.initValue, ...a.defaultValue }, !a.fetchUrl && e.hasInitialDataSource ? u() : (e.tableData = [], f()), n.pager.currentPage = 1, n.pager.total = 0;
+    }, v = () => {
+      e.activeName = "first";
     };
-    return g(() => a.showFormList, () => {
-      t.formList = m(b(a.showFormList, t.formListBackup)), t.formList.filter((e) => e.isShow).map((e) => {
-        t.form[e.key] = "";
-      });
-    }, { immediate: !0 }), g(() => a.showTableList, () => {
-      t.tableList = m(b(a.showTableList, t.tableListBackup));
-    }, { immediate: !0 }), {
-      ...y(t),
-      ...y(l),
-      staticData: O,
-      handleClose: T,
-      getData: r,
-      resetInfo: D,
-      handleOpen: k,
-      currentChange: p,
-      sizeChange: S,
-      searchData: d,
-      handleSelectionChange: w,
-      removeSelectData: F,
-      rowClick: L,
-      toFirstTab: R
+    return S(
+      () => a.showFormList,
+      () => {
+        e.formList = s(
+          g(a.showFormList, e.formListBackup)
+        );
+      },
+      { immediate: !0, deep: !0 }
+    ), S(
+      () => a.showTableList,
+      () => {
+        e.tableList = s(
+          g(a.showTableList, e.tableListBackup)
+        );
+      },
+      { immediate: !0, deep: !0 }
+    ), {
+      ...y(e),
+      ...y(a),
+      ...y(n),
+      handleClose: L,
+      getData: f,
+      resetInfo: k,
+      handleOpen: V,
+      currentChange: D,
+      sizeChange: T,
+      searchData: h,
+      handleSelectionChange: F,
+      removeSelectData: C,
+      rowClick: w,
+      toFirstTab: v
     };
   },
   components: {
-    SearchForm: h(() => import("../search-form/index.vue.mjs")),
-    ThePagination: h(() => import("../the-pagination/index.vue.mjs"))
+    SearchForm: p(() => import("../search-form/index.vue.mjs")),
+    ThePagination: p(
+      () => import("../the-pagination/index.vue.mjs")
+    )
   }
 });
 export {
-  x as default
+  A as default
 };

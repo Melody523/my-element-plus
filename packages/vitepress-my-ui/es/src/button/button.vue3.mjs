@@ -1,4 +1,4 @@
-const e = "";
+const _ = "";
 export {
-  e as default
+  _ as default
 };

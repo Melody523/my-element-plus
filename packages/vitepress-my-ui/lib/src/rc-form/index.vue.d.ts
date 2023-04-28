@@ -32,18 +32,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: () => any;
         default: () => {};
     };
-    initForm: {
-        type: () => any;
-        default: () => {};
-    };
-    formItemMrgb: {
-        type: NumberConstructor;
-        default: null;
-    };
-    extendAttrUrl: {
-        type: StringConstructor;
-        default: string;
-    };
     fetchUrl: {
         type: PropType<(data: any) => Promise<any>>;
     };
@@ -54,10 +42,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     renderFunc: {
         type: FunctionConstructor;
         default: (res: any) => any;
-    };
-    callbackFunc: {
-        type: FunctionConstructor;
-        default: null;
     };
     titleType: {
         type: StringConstructor;
@@ -74,6 +58,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
     isEmpty: (value: any) => boolean;
     firstDetailTitleIndex: any;
     getData: () => Promise<void>;
+    clearSelect: (item: any) => void;
     form: import("vue").Ref<any>;
     formRef: import("vue").Ref<any>;
     onChangeFlag: import("vue").Ref<boolean>;
@@ -110,18 +95,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: () => any;
         default: () => {};
     };
-    initForm: {
-        type: () => any;
-        default: () => {};
-    };
-    formItemMrgb: {
-        type: NumberConstructor;
-        default: null;
-    };
-    extendAttrUrl: {
-        type: StringConstructor;
-        default: string;
-    };
     fetchUrl: {
         type: PropType<(data: any) => Promise<any>>;
     };
@@ -132,10 +105,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     renderFunc: {
         type: FunctionConstructor;
         default: (res: any) => any;
-    };
-    callbackFunc: {
-        type: FunctionConstructor;
-        default: null;
     };
     titleType: {
         type: StringConstructor;
@@ -158,10 +127,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     staticData: any;
     labelWidth: string;
     formRules: any;
-    initForm: any;
-    formItemMrgb: number;
-    extendAttrUrl: string;
-    callbackFunc: Function;
     titleType: string;
 }>;
 export default _sfc_main;

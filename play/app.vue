@@ -1,6 +1,62 @@
 <template>
   <div>
     <el-config-provider :locale="locale">
+      <!-- <BasicSelectModal
+        v-model="form1['basicSelectModal']"
+        :ruleModel="form1['basicSelectModalRuleOutKey']"
+        :initItem="{ ruleOutKey: 'basicSelectModalRuleOutKey', key: 'basicSelectModal' }"
+        @onDialogShow="onDialogShow"
+        @onSearchClear="onSearchClear"
+      />
+      <SearchSelect
+        v-model="form1['searchSelect']"
+        :ruleModel="form1['searchSelectRuleOutKey']"
+        :initItem="{ ruleOutKey: 'searchSelectRuleOutKey', key: 'searchSelect', useCheckTable: true }"
+        :checkTable="form1?.['checkTable']?.['searchSelect']"
+        v-bind="{ fetchUrl: fetchUrl, initMultiple: true, searchBy: 'name' }"
+        @onDialogShow="onDialogShow"
+        @onSearchClear="onSearchClear"
+        @custDialog="custDialog"
+      /> -->
+      <!-- <RCForm
+        ref="rcFormRef"
+        v-bind="{
+          formList: formList,
+          staticData: staticData,
+          labelWidth: '160px',
+          formRules: rules,
+          titleType: 'detail',
+          fetchUrl: fetchApi,
+        }"
+        v-model="form"
+        @onDialogShow="onDialogShow"
+        @onSearchClear="onSearchClear"
+        @custDialog="custDialog"
+      >
+        <template v-slot:otherMessage>
+          <div class="btn_tools">
+            <Button type="plain" @click="resetForm">重置</Button>
+            <Button class="mrgl_10" @click="logForm">提交</Button>
+          </div>
+        </template>
+      </RCForm> -->
+      <SearchForm
+        ref="SearchFormRef"
+        v-bind="{
+          formList: formList,
+          staticData: staticData,
+          labelWidth: '160px',
+        }"
+        v-model="form"
+        @onSearchSubmit="onSearchSubmit"
+        @onDialogShow="onDialogShow"
+      />
+      <Selection
+        ref="selectionRef"
+        v-model="visible"
+        @cust-handle="custDialog"
+        v-bind="{ ...searchData, staticData }"
+      />
       <SearchForm
         ref="SearchFormRef"
         v-bind="{
@@ -149,14 +205,8 @@
 
       <DigitalRange v-model="form1['digitalRange']"></DigitalRange>
 
-      <DatePicker v-model="form1['datePicker']" />
+      <DatePicker v-model="form1['datePicker']" :clearable="false" />
 
-      <BasicSelectModal
-        v-model="form1['basicSelectModal']"
-        :ruleModel="form1['basicSelectModalRuleOutKey']"
-        @onDialogShow="onDialogShow"
-        @onSearchClear="onSearchClear"
-      />
       <SearchSelect
         v-model="form1['searchSelect']"
         @onDialogShow="onDialogShow"
@@ -168,12 +218,6 @@
         :checkTable="form1?.['checkTable']?.['searchSelect']"
         :ruleModel="form1['searchSelectRuleOutKey']"
         @custDialog="custDialog"
-      />
-      <Selection
-        ref="selectionRef"
-        v-model="visible"
-        @cust-handle="custDialog"
-        v-bind="{ ...searchData }"
       />
     </el-config-provider>
   </div>
@@ -191,97 +235,65 @@ import {
 import { ElConfigProvider } from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import { filterCheckTableList } from "./utils/utils";
-// import {
-//   Button,
-//   Icon,
-//   InputAndButton,
-//   SearchNumberList,
-//   DigitalRange,
-//   DatePicker,
-//   BasicSelectModal,
-//   SearchSelect,
-//   RCForm,
-//   MenuButton,
-//   SearchForm,
-//   Selection,
-// } from "@vitepress-element-ui/components";
 export default defineComponent({
   setup() {
     // zh_CN zh_TW en_US zh_VN
+    const mockData = (count = 20, startCount = 1) => {
+      let data = []
+      for(let i = startCount; i <= count; i++) {
+        data.push({ id: i, name: `名称${i}`, code: `code${i}`, label: `名称${i}`, value: `code${i}` })
+      }
+      return data
+    }
     const fetchUrl = (params: any) => {
       console.log(params);
       
       return new Promise((resolve, reject) => {
         resolve({
-          data: [
-            { id: 1, name: "名称1", code: "1" },
-            { id: 2, name: "名称2", code: "2" },
-            { id: 3, name: "名称3", code: "3" },
-            { id: 4, name: "名称4", code: "4" },
-            { id: 5, name: "名称5", code: "5" },
-            { id: 6, name: "名称6", code: "6" },
-            { id: 7, name: "名称7", code: "7" },
-          ],
-          count: 7,
+          data: mockData(params.currentPage * params.pageSize, (params.currentPage - 1) * params.pageSize + 1),
+          count: 45,
         });
       });
     };
+    let id = 0;
     const state = reactive<any>({
-      form1: {
-        searchNumber: "",
-        ruleOutKey: "",
-        // digitalRange: [3, 2],
-      },
+      form1: {},
       rcFormRef: ref(null),
       selectionRef: ref(null),
       SearchFormRef: ref(null),
       visible: false,
       formList: [
+        // {
+				// 	key: 'baseMessage',
+				// 	type: 'br',
+				// 	contant: '基本信息',
+				// 	isShow: true,
+				// },
         {
           key: "input",
           label: "输入框",
           isShow: true,
         },
         {
-          key: "select",
+          key: "radioSelect",
           label: "下拉单选",
           type: "select",
           isShow: true,
           options: [
-            { label: "选择1", value: "选择1" },
-            { label: "选择2", value: "选择2" },
+            { value: "1", label: "选择1" },
+            { value: "2", label: "选择2" },
           ],
         },
         {
-          key: "select2",
-          label: "下拉单选-selectWith",
+          key: "selectWith",
+          label: "下拉单选value+label",
           type: "selectWith",
           isShow: true,
-          options: [
-            { label: "选择1", value: "选择1" },
-            { label: "选择2", value: "选择2" },
-          ],
         },
         {
-          key: "selectMore",
+          key: "multipleSelect",
+          selectKey: 'selectWith',
           label: "下拉多选",
-          type: "select",
-          isShow: true,
-          options: [
-            { label: "选择1", value: "选择1" },
-            { label: "选择2", value: "选择2" },
-            { label: "选择12", value: "选择12" },
-            { label: "选择23", value: "选择23" },
-            { label: "选择14", value: "选择14" },
-            { label: "选择25", value: "选择25" },
-            { label: "选择16", value: "选择16" },
-            { label: "选择27", value: "选择27" },
-          ],
-          multiple: true,
-        },
-        {
-          key: "staticSelectEnum",
-          label: "静态枚举获取方式",
           type: "select",
           isShow: true,
           multiple: true,
@@ -290,146 +302,157 @@ export default defineComponent({
           key: "digitalRange",
           label: "区间输入",
           type: "digitalRange",
-          changeCallBack: (val: any, form: any) => {
-            // console.log(val, form);
-            
-          },
           isShow: true,
         },
         {
-          key: "date1",
-          label: "日期选择1",
+          key: "dateSelect",
+          label: "日期选择器",
           type: "dateSelect",
           isShow: true,
         },
         {
-          key: "date2",
-          label: "日期选择2",
+          key: "dateTimeSelect",
+          label: "日期时间选择器",
           type: "dateSelect",
           selectTime: true,
           isShow: true,
         },
         {
           key: "date",
-          label: "date",
+          label: "日期选择",
           type: "date",
           isShow: true,
         },
         {
           key: "daterange",
-          label: "daterange",
+          label: "日期范围选择",
           type: "daterange",
           isShow: true,
         },
         {
           key: "datetime",
-          label: "datetime",
+          label: "日期时间选择",
           type: "datetime",
           isShow: true,
         },
         {
           key: "datetimerange",
-          label: "datetimerange",
+          label: "日期时间范围选择",
           type: "datetimerange",
           isShow: true,
         },
         {
           key: "year",
-          label: "year",
+          label: "年份选择",
           isShow: true,
           type: "year",
           disabledDate: (time: any) => {
             return time.getTime() <= Date.now();
           },
-          changeCallBack: (e: any) => {
-            // console.log(e);
-          },
+        },
+        {
+          key: "cascader",
+          label: "级联选择器",
+          isShow: true,
+          type: "cascader",
+          cascaderProps: {
+            lazy: true,
+            lazyLoad (node: any, resolve: any) {
+              const { level } = node;
+              setTimeout(() => {
+                const nodes = Array.from({ length: level + 1 })
+                  .map(item => ({
+                    value: ++id,
+                    label: `选项${id}`,
+                    leaf: level >= 2
+                  }));
+                // 通过调用resolve将子节点数据返回，通知组件数据加载完成
+                resolve(nodes);
+              }, 1000);
+            }
+          }
         },
         {
           key: "searchNumberList",
           label: "多单号查询",
           type: "modalTextarea",
-          disabled: true,
           isShow: true,
         },
         {
           key: "searchNumberListOut",
-          label: "多单号查询（带排除）",
+          label: "多单号查询+排除",
           type: "modalTextarea",
           isShow: true,
           ruleOutKey: "searchNumberOutKey", // 排除功能所需要的key
-          // ruleTitle: '排除',
-          // changeCallBack: () => searchNumberListOutCallBack(),
+          ruleTitle: '排除单号',
         },
+        // {
+				// 	key: 'baseMessage2',
+				// 	type: 'br',
+				// 	contant: '弹窗选择信息',
+				// 	isShow: true,
+				// },
         {
-          key: "search1",
-          label: "选择器",
+          key: "search",
+          label: "单选弹窗选择器+排除",
           type: "search",
           isShow: true,
-          clearData: { search1: "", search1Codes: "" },
+          ruleOutKey: "searchOut",
+          fetchUrl,
+          initMultiple: false,
         },
         {
           key: "search2",
-          label: "选择器(带排序)",
+          label: "多选弹窗选择器+排除",
           type: "search",
           isShow: true,
           ruleOutKey: "searchOut2",
-          clearData: { search2: "", search2Codes: "", search2Item: "" },
+          fetchUrl,
+          initMultiple: true,
         },
         {
-          key: "selectSearch",
-          label: "模糊下拉选择器新版",
+          key: "selectSearch1",
+          label: "模糊下拉选择器+排除",
           type: "searchSelect",
           searchBy: "name",
-          fetchUrl: fetchUrl,
+          fetchUrl,
           rowKey: "code",
           initMultiple: true,
-          disabled: false,
-          labelFormat: ["code", "name"],
-          catchValue: ["code", "name"],
-          ruleOutKey: "selectSearchOut",
+          catchValueAll: true,
+          ruleOutKey: "selectSearchOut1",
           isShow: true,
-          changeCallBack: (val: any) => {
-            // console.log("changeCallBack", val);
-          },
+          useCheckTable: true
         },
         {
           key: "selectSearch2",
           label: "模糊下拉选择器单选",
           type: "searchSelect",
           searchBy: "name",
-          fetchUrl: fetchUrl,
+          fetchUrl,
           rowKey: "code",
           initMultiple: false,
-          disabled: false,
-          catchValue: ["code", "name"],
+          labelFormat: ["code", "name"],
+          catchValueAll: true,
           isShow: true,
-          changeCallBack: (val: any) => {
-            // console.log("changeCallBack", val);
-          },
+          useCheckTable: true
         },
         {
           key: "selectSearch3",
-          label: "模糊下拉选择器自助",
+          label: "模糊下拉选择器",
           type: "searchSelect",
           searchBy: "name",
           rowKey: "code",
           initMultiple: true,
           disabled: false,
-          catchValue: ["code", "name"],
+          catchValueAll: true,
           isShow: true,
-          initialDataSource: [
-            { id: 1, name: "名称1", code: "1" },
-            { id: 2, name: "名称2", code: "2" },
-            { id: 3, name: "名称3", code: "3" },
-          ],
-          changeCallBack: (val: any) => {
-            // console.log("changeCallBack", val);
-          },
+          initialDataSource: mockData(15),
+          ruleOutKey: "selectSearchOut3",
+          useCheckTable: true
         },
         {
           key: "radio",
-          label: "radio",
+          label: "单选",
           isShow: true,
           type: "radio",
           options: [
@@ -439,45 +462,101 @@ export default defineComponent({
         },
         {
           key: "inputNumber",
-          label: "inputNumber",
+          label: "输入数字",
           isShow: true,
           type: "inputNumber",
         },
         {
           key: "remark",
-          label: "remark",
+          label: "备注",
           isShow: true,
           type: "remark",
           span: 24,
         },
+        {
+					key: 'otherMessage',
+					type: 'br',
+					slotName: 'otherMessage',
+					isShow: true,
+				},
       ],
       staticData: {
-        staticSelectEnum: [
-          { label: "静态枚举1", value: "静态枚举1" },
-          { label: "静态枚举2", value: "静态枚举2" },
-        ],
+        selectWith: mockData(10),
       },
       rules: {
-        inputRule: [
-          { required: true, message: "请填写inputRule框", trigger: "change" },
+        input: [
+          { required: true, message: "请填写输入框", trigger: "blur" },
         ],
       },
-      form: {
-        // input: "12312312",
-        // searchOut2: [1,2,3],
-        // date1: [new Date(), '', 'nowDateAfter']
-      },
+      form: {},
       searchData: {},
+      setFormValue: {
+        basicSelectModal: { basicSelectModal: 'name', basicSelectModalId: 'id' },
+        basicSelectModalRuleOutKey: { basicSelectModalRuleOutKey: 'id' },
+        searchSelect: { searchSelect: 'name', searchSelectId: 'id' },
+        searchSelectRuleOutKey: { searchSelectRuleOutKey: 'id' },
+        search: { search: 'name' },
+        searchOut: { searchOut: 'id' },
+        search2: { search2: 'name' },
+        searchOut2: { searchOut2: 'id' },
+        selectSearch1: { selectSearch1: 'name' },
+        selectSearchOut1: { selectSearchOut1: 'id' },
+        selectSearch2: { selectSearch2: 'name' },
+        selectSearchOut2: { selectSearchOut2: 'id' },
+        selectSearch3: { selectSearch3: 'name' },
+        selectSearchOut3: { selectSearchOut3: 'id' },
+      }
     });
-    const onDialogShow = (key: string) => {
+    const onDialogShow = (key: string, item: any) => {
       switch (key) {
-        case "search2": 
-        case "searchOut2": {
+        case "basicSelectModal": 
+        case "basicSelectModalRuleOutKey": {
           state.searchData = {
-            title: "选择客户",
+            title: "弹窗选择器",
             selectKey: key,
             isRadio: false,
             fetchUrl: fetchUrl,
+            // initialDataSource: mockData(15),
+            showFormList: {
+              code: { key: "code", label: "编码", isShow: true, type: "input" },
+              name: { key: "name", label: "名称", isShow: true, type: "select", multiple: true },
+            },
+            showTableList: {
+              id: { key: "id", label: "id", isShow: true },
+              code: { key: "code", label: "编码", isShow: true },
+              name: { key: "name", label: "名称", isShow: true },
+            },
+          };
+          state.visible = true;
+          break;
+        }
+        case "searchSelect": 
+        case "searchSelectRuleOutKey": {
+          state.searchData = {
+            title: "弹窗选择器",
+            selectKey: key,
+            isRadio: false,
+            fetchUrl: fetchUrl
+          };
+          state.visible = true;
+          break;
+        }
+        case "search": 
+        case "searchOut": 
+        case "search2": 
+        case "searchOut2": 
+        case "selectSearch1": 
+        case "selectSearchOut1": 
+        case "selectSearch2": 
+        case "selectSearchOut2": 
+        case "selectSearch3": 
+        case "selectSearchOut3": {
+          state.searchData = {
+            title: "弹窗选择器",
+            selectKey: key,
+            isRadio: !item.initMultiple,
+            fetchUrl: item.fetchUrl,
+            initialDataSource: item.initialDataSource,
           };
           state.visible = true;
           break;
@@ -491,8 +570,19 @@ export default defineComponent({
           state.form?.checkTable?.[key] || [],
       };
     };
-    const onSearchClear = () => {
-      console.log("onSearchClear");
+    const onSearchClear = (arg: any, key: any) => {
+      let operaData = {};
+      Object.keys(state.setFormValue[key])?.map(item => {
+        operaData[item] = null
+      })
+      state.form = {
+        ...state.form,
+        checkTable: {
+          ...state.form?.checkTable,
+          [key]: [],
+        },
+        ...operaData,
+      }
     };
     const custDialog = (data: any, key = "") => {
       const { list, type } = data;
@@ -500,40 +590,42 @@ export default defineComponent({
       let catchValue = state.formList?.find(
         (item: any) => item.key === dialogKey || item?.ruleOutKey === dialogKey
       )?.catchValue || ["id", "code", "name"];
-
-      if (state.SearchFormRef) {
-        let operaData = {};
-        switch (dialogKey) {
-          case "search2": {
-            operaData = {
-              search2: list.map((item: any) => item.code),
-            };
-            break;
-          }
-          case "searchOut2": {
-            operaData = {
-              searchOut2: list.map((item: any) => item.code),
-            };
-            break;
-          }
-          default:
-            break;
-        }
-        state.form = {
-          ...state.form,
-          checkTable: {
-            ...state.form?.checkTable,
-            [dialogKey]: filterCheckTableList(list, catchValue),
-          },
-          ...operaData,
-        }
+      let operaData = {};
+      Object.keys(state.setFormValue[dialogKey])?.map(item => {
+        operaData[item] = list.map((itm: any) => itm[state.setFormValue[dialogKey][item]])
+      })
+      state.form = {
+        ...state.form,
+        checkTable: {
+          ...state.form?.checkTable,
+          [dialogKey]: filterCheckTableList(list, catchValue),
+        },
+        ...operaData,
       }
     };
 		const onSearchSubmit = (res: any) => {
 			console.log(res);
 		}
     const logForm = () => {
-      console.log(state.form);
+      state.rcFormRef.submit()
+				.then((res: any) => {
+          console.log(res);
+				})
+				.catch((error: any) => {
+					console.log(error);
+				});
+    }
+    const resetForm = () => {
+      state.form = {}
+    }
+    const fetchApi = (params: any) => {
+      return new Promise((resolve, reject) => {
+        resolve({
+          input: '输入框',
+          radioSelect: '1',
+          selectWith: 'code1',
+        });
+      });
     }
     return {
       ...toRefs(state),
@@ -544,22 +636,12 @@ export default defineComponent({
       fetchUrl,
 			onSearchSubmit,
       logForm,
+      resetForm,
+      fetchApi,
     };
   },
   components: {
     ElConfigProvider,
-    // Button,
-    // Icon,
-    // InputAndButton,
-    // SearchNumberList,
-    // DigitalRange,
-    // DatePicker,
-    // BasicSelectModal,
-    // SearchSelect,
-    // RCForm,
-    // MenuButton,
-    // SearchForm,
-    // Selection,
   },
 });
 </script>
@@ -573,5 +655,15 @@ export default defineComponent({
   :deep(.menu_button_box) {
     margin: 0 10px 10px 0;
   }
+}
+.btn_tools {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #dedede;
+}
+.mrgl_10 {
+  margin-left: 10px;
 }
 </style>

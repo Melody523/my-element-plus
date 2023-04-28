@@ -19,6 +19,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    disabled: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    clearable: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
 }, {
     shortcuts: {
         text: string;
@@ -48,15 +56,25 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    disabled: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    clearable: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
 }>> & {
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onClear?: ((...args: any[]) => any) | undefined;
     onChange?: ((...args: any[]) => any) | undefined;
 }, {
+    disabled: boolean;
     modelValue: any[];
     initFormat: string;
     startPlaceholder: string;
     endPlaceholder: string;
     selectTime: boolean;
+    clearable: boolean;
 }>;
 export default _sfc_main;

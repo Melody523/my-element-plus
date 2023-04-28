@@ -30,7 +30,7 @@
 
 <script lang="ts">
 // 修饰输入框，在其后面添加一个按钮
-import { toRefs, reactive, defineComponent, watch, computed } from "vue";
+import { toRefs, reactive, defineComponent, watch, computed, defineAsyncComponent } from "vue";
 export default defineComponent({
   name: "InputAndButton",
   emits: ["click"],
@@ -65,6 +65,11 @@ export default defineComponent({
       ...toRefs(state),
       emit,
     };
+  },
+  components: {
+    SvgIcon: defineAsyncComponent(
+      () => import("../icon/index.vue")
+    ),
   },
 });
 </script>

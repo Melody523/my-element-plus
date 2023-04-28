@@ -78,10 +78,10 @@ export declare const SearchSelect: import("../utils/withinstall").SFCWithInstall
     disabled: import("vue").Ref<boolean>;
     onOnDialogShow: import("vue").Ref<((...args: any[]) => any) | undefined>;
     onOnSearchClear: import("vue").Ref<((...args: any[]) => any) | undefined>;
+    "onUpdate:modelValue": import("vue").Ref<((...args: any[]) => any) | undefined>;
     modelValue: import("vue").Ref<any[] | undefined>;
     ruleModel: import("vue").Ref<string>;
     initItem: import("vue").Ref<any>;
-    "onUpdate:modelValue": import("vue").Ref<((...args: any[]) => any) | undefined>;
     onChange: import("vue").Ref<((...args: any[]) => any) | undefined>;
     onCustDialog: import("vue").Ref<((...args: any[]) => any) | undefined>;
     rowKey: import("vue").Ref<string>;

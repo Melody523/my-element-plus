@@ -1,6 +1,6 @@
 import { useCurrentInstance as m } from "../utils/utils.mjs";
-import { defineComponent as D, reactive as y, ref as Y, computed as g, watch as k, toRefs as B } from "vue";
-const v = D({
+import { defineComponent as D, reactive as y, ref as Y, computed as g, watch as B, toRefs as k } from "vue";
+const p = D({
   name: "DatePicker",
   emits: ["update:modelValue", "clear", "change"],
   props: {
@@ -26,10 +26,18 @@ const v = D({
     selectTime: {
       type: Boolean,
       default: !1
+    },
+    disabled: {
+      type: Boolean,
+      default: !1
+    },
+    clearable: {
+      type: Boolean,
+      default: !0
     }
   },
   setup(o, { emit: f }) {
-    const { globalProperties: l } = m();
+    const { globalProperties: c } = m();
     let e = y({
       dateType: o.selectTime ? "datetimerange" : "daterange",
       // 选择器type变量
@@ -45,7 +53,7 @@ const v = D({
       {
         text: "时间范围",
         value: () => {
-          a("daterange"), c(null), setTimeout(() => {
+          a("daterange"), l(null), setTimeout(() => {
             e.datePickerRef.focus(!0);
           }, 0);
         }
@@ -53,7 +61,7 @@ const v = D({
       {
         text: "指定日之前",
         value: () => {
-          a("dateBefore"), c(null), setTimeout(() => {
+          a("dateBefore"), l(null), setTimeout(() => {
             e.datePickerRef.focus(!0);
           }, 0);
         }
@@ -61,7 +69,7 @@ const v = D({
       {
         text: "指定日之后",
         value: () => {
-          a("dateAfter"), c(null), setTimeout(() => {
+          a("dateAfter"), l(null), setTimeout(() => {
             e.datePickerRef.focus(!0);
           }, 0);
         }
@@ -69,13 +77,13 @@ const v = D({
       {
         text: "当日之前",
         value: () => {
-          a("nowDateBefore"), c(s(Date(), "YYYY-MM-DD 23:59:59"));
+          a("nowDateBefore"), l(s(Date(), "YYYY-MM-DD 23:59:59"));
         }
       },
       {
         text: "当日之后",
         value: () => {
-          a("nowDateAfter"), c(s(Date(), "YYYY-MM-DD 00:00:00"));
+          a("nowDateAfter"), l(s(Date(), "YYYY-MM-DD 00:00:00"));
         }
       }
     ];
@@ -98,7 +106,7 @@ const v = D({
           break;
       }
       e.classKey = t;
-    }, s = (t, r) => t ? l.dayjs(t).format(r || o.initFormat || d) : "", c = (t) => {
+    }, s = (t, r) => t ? c.dayjs(t).format(r || o.initFormat || d) : "", l = (t) => {
       if (!t) {
         ["dateBefore", "dateAfter"].includes(e.classKey) ? f("update:modelValue", ["", "", e.classKey]) : f("update:modelValue", ["", "", "daterange"]), f("clear", t);
         return;
@@ -123,7 +131,7 @@ const v = D({
       }
       f("update:modelValue", r);
     };
-    k(
+    B(
       () => o.modelValue,
       (t) => {
         if (t && t.length > 0)
@@ -146,7 +154,7 @@ const v = D({
                 break;
             }
           else
-            t[0] === "" ? (a("dateBefore"), e.value = t[1]) : t[1] === "" ? (a("dateAfter"), e.value = t[0]) : t[0] && t[1] && (a("daterange"), e.value = t);
+            t[0] && t[1] ? (a("daterange"), e.value = t) : t[0] ? (a("dateAfter"), e.value = t[0]) : t[1] && (a("dateBefore"), e.value = t[1]);
         else
           a("daterange"), e.value = "";
         f("change", e.value);
@@ -162,14 +170,14 @@ const v = D({
       ].includes(e.classKey) && (e.format = "") : (["dateBefore", "nowDateBefore"].includes(e.classKey) && (e.format = `~ 至 ${d}`), ["dateAfter", "nowDateAfter"].includes(e.classKey) && (e.format = `${d} 至 ~`)));
     }, u = (t) => ["nowDateBefore", "nowDateAfter"].includes(e.classKey);
     return {
-      ...B(e),
+      ...k(e),
       shortcuts: n,
-      onChange: c,
+      onChange: l,
       visibleChange: i,
       disabledDate: u
     };
   }
 });
 export {
-  v as default
+  p as default
 };

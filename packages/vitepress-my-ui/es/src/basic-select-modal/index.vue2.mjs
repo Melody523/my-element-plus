@@ -1,7 +1,7 @@
-import { defineComponent as d, reactive as c, ref as s, computed as n, toRefs as f, defineAsyncComponent as m } from "vue";
-const h = d({
+import { defineComponent as c, reactive as s, ref as f, computed as n, toRefs as m, defineAsyncComponent as a } from "vue";
+const V = c({
   name: "BasicSelectModal",
-  emits: ["onDialogShow", "onSearchClear"],
+  emits: ["onDialogShow", "onSearchClear", "update:modelValue"],
   props: {
     modelValue: {
       type: String,
@@ -26,33 +26,40 @@ const h = d({
     }
   },
   setup(o, { emit: l }) {
-    let e = c({
+    let e = s({
       inputValue: "",
       ruleValue: "",
-      inputRef: s(null)
+      inputRef: f(null)
     });
-    const a = (t) => {
-      l("onDialogShow", t);
-    }, u = (t, i, p) => {
-      l("onSearchClear", t, i, p);
+    const u = (t) => {
+      l("onDialogShow", t, o.initItem);
+    }, i = (t, d, p) => {
+      e.inputValue = "", l("onSearchClear", t, d, p);
     };
-    e.inputValue = n(() => o.modelValue), e.ruleValue = n(() => o.ruleModel);
+    e.inputValue = n({
+      // 重新定义
+      get: () => o.modelValue,
+      set: (t) => l("update:modelValue", t)
+    }), e.ruleValue = n(() => o.ruleModel);
     const r = () => {
       e.inputRef.blur();
     };
     return {
-      ...f(e),
-      onDialogShow: a,
-      onSearchClear: u,
+      ...m(e),
+      onDialogShow: u,
+      onSearchClear: i,
       onFocus: r
     };
   },
   components: {
-    InputAndButoon: m(
+    InputAndButoon: a(
       () => import("../input-and-button/index.vue.mjs")
+    ),
+    SvgIcon: a(
+      () => import("../icon/index.vue.mjs")
     )
   }
 });
 export {
-  h as default
+  V as default
 };

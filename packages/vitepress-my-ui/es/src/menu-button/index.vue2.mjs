@@ -1,5 +1,5 @@
-import { defineComponent as l, reactive as p, toRefs as n } from "vue";
-const u = l({
+import { defineComponent as a, reactive as i, toRefs as n, defineAsyncComponent as l } from "vue";
+const u = a({
   name: "MenuButton",
   emits: ["click", "onControlDropdown"],
   props: {
@@ -29,7 +29,7 @@ const u = l({
     },
     trigger: {
       type: String,
-      default: ""
+      default: "hover"
     },
     // 下拉按钮的类型 same | other
     dropdownModel: {
@@ -44,32 +44,29 @@ const u = l({
     size: {
       type: String,
       default: "large"
-    },
-    /**
-     * 特殊枚举给搜索组件提供特殊样式
-     */
-    useType: {
-      type: Boolean,
-      default: !1
     }
   },
   setup(r, { emit: e }) {
-    const o = p({
+    const o = i({
       isDropdown: !1
-    }), a = (t) => {
+    }), d = (t) => {
       t();
-    }, d = (t) => {
+    }, p = (t) => {
       o.isDropdown = t, e("onControlDropdown", { flag: t });
     };
     return {
       ...n(r),
       ...n(o),
-      command: a,
+      command: d,
       emit: e,
-      controlDropdown: d
+      controlDropdown: p
     };
   },
-  components: {}
+  components: {
+    SvgIcon: l(
+      () => import("../icon/index.vue.mjs")
+    )
+  }
 });
 export {
   u as default

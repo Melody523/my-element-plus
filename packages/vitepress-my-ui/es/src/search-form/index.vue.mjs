@@ -1,54 +1,58 @@
 import i from "./index.vue2.mjs";
-import { resolveComponent as n, openBlock as m, createElementBlock as S, normalizeStyle as d, createVNode as e, mergeProps as u, withCtx as w, normalizeProps as r, guardReactiveProps as t, withDirectives as p, createElementVNode as f, vShow as b } from "vue";
+import { resolveComponent as t, openBlock as l, createElementBlock as m, normalizeStyle as S, createVNode as e, mergeProps as n, withCtx as w, withDirectives as u, createElementVNode as d, vShow as p } from "vue";
 import "./index.vue3.mjs";
-import g from "../../_virtual/_plugin-vue_export-helper.mjs";
-const D = { class: "under_stick_control" };
-function R(o, s, C, c, v, L) {
-  const a = n("ToolsList"), l = n("RCForm");
-  return m(), S("div", {
+import b from "../../_virtual/_plugin-vue_export-helper.mjs";
+const f = { class: "under_stick_control" };
+function g(o, s, C, D, c, O) {
+  const a = t("ToolsList"), h = t("RCForm");
+  return l(), m("div", {
     class: "contant_box",
-    style: d(`max-height:${o.maxHeight}px`)
+    style: S(`max-height:${o.maxHeight}px`)
   }, [
-    e(l, u({ ref: "RCFormRef" }, {
+    e(h, n({ ref: "RCFormRef" }, {
       ...o.$attrs,
       formList: o.formList,
       rowNumber: o.rowNumber,
       staticData: o.staticData,
       labelWidth: o.labelWidth,
       hasToolsCol: !0,
-      show: o.hasShow ? !1 : o.show
+      show: o.hasShow ? o.show : !1
     }, {
       modelValue: o.form,
-      "onUpdate:modelValue": s[0] || (s[0] = (h) => o.form = h),
+      "onUpdate:modelValue": s[0] || (s[0] = (r) => o.form = r),
       onOnDialogShow: o.onDialogShow,
       onCustDialog: o.custDialog,
       onInputEnter: o.onSearchSubmit
     }), {
       searchButton: w(() => [
-        e(a, r(t({
-          onReset: o.onReset,
-          onSearchSubmit: o.onSearchSubmit,
-          show: o.hasShow ? !1 : o.show,
-          changeShow: o.hasShow ? !1 : o.changeShow,
-          disabled: o.toolsListDisabled
-        })), null, 16)
+        e(a, n({
+          show: o.show,
+          disabled: o.toolsListDisabled,
+          hasShow: o.hasShow
+        }, {
+          onOnReset: o.onReset,
+          onOnSearchSubmit: o.onSearchSubmit,
+          onChangeShow: o.changeShow
+        }), null, 16, ["onOnReset", "onOnSearchSubmit", "onChangeShow"])
       ]),
       _: 1
     }, 16, ["modelValue", "onOnDialogShow", "onCustDialog", "onInputEnter"]),
-    p(f("div", D, [
-      e(a, r(t({
-        onReset: o.onReset,
-        onSearchSubmit: o.onSearchSubmit,
-        show: o.hasShow ? !1 : o.show,
-        changeShow: o.hasShow ? !1 : o.changeShow,
-        disabled: o.toolsListDisabled
-      })), null, 16)
+    u(d("div", f, [
+      e(a, n({
+        show: o.show,
+        disabled: o.toolsListDisabled,
+        hasShow: o.hasShow
+      }, {
+        onOnReset: o.onReset,
+        onOnSearchSubmit: o.onSearchSubmit,
+        onChangeShow: o.changeShow
+      }), null, 16, ["onOnReset", "onOnSearchSubmit", "onChangeShow"])
     ], 512), [
-      [b, !o.hasShow && o.show]
+      [p, o.hasShow && o.show]
     ])
   ], 4);
 }
-const N = /* @__PURE__ */ g(i, [["render", R], ["__scopeId", "data-v-a52653a4"]]);
+const V = /* @__PURE__ */ b(i, [["render", g], ["__scopeId", "data-v-5353ccee"]]);
 export {
-  N as default
+  V as default
 };

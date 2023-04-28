@@ -1,8 +1,8 @@
-import { defineComponent as n, useCssVars as i, computed as t, openBlock as u, createElementBlock as m, normalizeClass as f, unref as r, createElementVNode as d } from "vue";
-const p = ["xlink:href", "fill"], _ = n({
+import { defineComponent as r, useCssVars as i, computed as s, openBlock as u, createElementBlock as m, normalizeClass as f, unref as t, createElementVNode as d } from "vue";
+const p = ["xlink:href", "fill"], N = r({
   name: "Icon"
-}), N = /* @__PURE__ */ n({
-  ..._,
+}), C = /* @__PURE__ */ r({
+  ...N,
   props: {
     iconName: {
       //图标名称: icon-copy
@@ -20,23 +20,23 @@ const p = ["xlink:href", "fill"], _ = n({
       default: ""
     }
   },
-  setup(o, { expose: s }) {
+  setup(o, { expose: c }) {
     const e = o;
     i((a) => ({
-      "0e71a39b": o.color
+      74316426: o.color
     }));
-    const c = t(() => `#${e.iconName}`), l = t(() => `svg-icon ${e.color ? "colorClass" : ""} ${e.className}`);
-    return s({ color: e.color }), (a, g) => (u(), m("svg", {
-      class: f(r(l)),
+    const l = s(() => `#${e.iconName}`), n = s(() => `svg-icon ${e.color || e.className ? "colorClass" : ""} ${e.className}`);
+    return c({ color: e.color }), (a, _) => (u(), m("svg", {
+      class: f(t(n)),
       "aria-hidden": "true"
     }, [
       d("use", {
-        "xlink:href": r(c),
+        "xlink:href": t(l),
         fill: o.color
       }, null, 8, p)
     ], 2));
   }
 });
 export {
-  N as default
+  C as default
 };

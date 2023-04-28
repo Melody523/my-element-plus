@@ -38,10 +38,10 @@ declare const _sfc_main: import("vue").DefineComponent<{
     modelTarget: import("vue").Ref<string>;
     countsNumber: import("vue").Ref<any>;
     disabled: import("vue").Ref<boolean>;
+    "onUpdate:modelValue": import("vue").Ref<((...args: any[]) => any) | undefined>;
     modelValue: import("vue").Ref<string>;
     ruleModel: import("vue").Ref<string>;
     placeholder: import("vue").Ref<string>;
-    "onUpdate:modelValue": import("vue").Ref<((...args: any[]) => any) | undefined>;
     onClear: import("vue").Ref<((...args: any[]) => any) | undefined>;
     onChange: import("vue").Ref<((...args: any[]) => any) | undefined>;
     keyUpEnter: import("vue").Ref<Function>;

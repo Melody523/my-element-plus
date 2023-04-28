@@ -1,4 +1,4 @@
-import o from "./icon.vue.mjs";
+import o from "./index.vue.mjs";
 import t from "../utils/withinstall/index.mjs";
 const m = t(o);
 export {

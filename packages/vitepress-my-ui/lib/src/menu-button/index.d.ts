@@ -31,10 +31,6 @@ export declare const MenuButton: import("../utils/withinstall").SFCWithInstall<i
         type: StringConstructor;
         default: string;
     };
-    useType: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
 }, {
     command: (onClick: () => void) => void;
     emit: (event: "click" | "onControlDropdown", ...args: any[]) => void;
@@ -50,7 +46,6 @@ export declare const MenuButton: import("../utils/withinstall").SFCWithInstall<i
     buttonTitle: import("vue").Ref<string>;
     trigger: import("vue").Ref<string>;
     dropdownModel: import("vue").Ref<string>;
-    useType: import("vue").Ref<boolean>;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("click" | "onControlDropdown")[], "click" | "onControlDropdown", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     buttonType: {
         type: StringConstructor;
@@ -84,10 +79,6 @@ export declare const MenuButton: import("../utils/withinstall").SFCWithInstall<i
         type: StringConstructor;
         default: string;
     };
-    useType: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
 }>> & {
     onClick?: ((...args: any[]) => any) | undefined;
     onOnControlDropdown?: ((...args: any[]) => any) | undefined;
@@ -100,6 +91,5 @@ export declare const MenuButton: import("../utils/withinstall").SFCWithInstall<i
     buttonTitle: string;
     trigger: string;
     dropdownModel: string;
-    useType: boolean;
 }>>;
 export default MenuButton;

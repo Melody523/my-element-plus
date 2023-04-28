@@ -23,7 +23,7 @@ export declare const BasicSelectModal: import("../utils/withinstall").SFCWithIns
     onDialogShow: (key: string) => void;
     onSearchClear: (arg: any, key: string, callback: any) => void;
     onFocus: () => void;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("onDialogShow" | "onSearchClear")[], "onDialogShow" | "onSearchClear", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("onDialogShow" | "onSearchClear" | "update:modelValue")[], "onDialogShow" | "onSearchClear" | "update:modelValue", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     modelValue: {
         type: StringConstructor;
         default: string;
@@ -47,6 +47,7 @@ export declare const BasicSelectModal: import("../utils/withinstall").SFCWithIns
 }>> & {
     onOnDialogShow?: ((...args: any[]) => any) | undefined;
     onOnSearchClear?: ((...args: any[]) => any) | undefined;
+    "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }, {
     disabled: boolean;
     modelValue: string;

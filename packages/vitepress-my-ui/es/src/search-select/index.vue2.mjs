@@ -1,6 +1,6 @@
-import { defineComponent as A, reactive as b, watch as D, watchEffect as C, toRefs as s, defineAsyncComponent as k } from "vue";
+import { defineComponent as b, reactive as D, watch as C, watchEffect as k, toRefs as s, defineAsyncComponent as g } from "vue";
 import { deepClone as M } from "../utils/utils.mjs";
-const K = A({
+const K = b({
   name: "SearchSelect",
   emits: [
     "update:modelValue",
@@ -94,7 +94,7 @@ const K = A({
     }
   },
   setup(e, { emit: c }) {
-    let n = b({
+    let n = D({
       inputValue: [],
       loading: !1,
       options: [],
@@ -111,12 +111,11 @@ const K = A({
       ]), n.options = h(
         l.map((u) => y(u))
       );
-    }, g = () => ({
+    }, S = () => ({
       ...e.pagination,
-      ...e.params,
-      ...e.dealFetchFunc ? e.dealFetchFunc() : {}
-    }), F = (t, a = !1) => {
-      e.fetchUrl && (t || a) && (n.query = t, n.loading = !0, e.fetchUrl(e.dealFetchFunc(g)).then((i) => {
+      ...e.params
+    }), V = (t, a = !1) => {
+      e.fetchUrl && (t || a) && (n.query = t, n.loading = !0, e.fetchUrl(e.dealFetchFunc(S())).then((i) => {
         if (t === n.query) {
           const { data: l } = e.renderFunc(i);
           r(l, !0, !1);
@@ -126,7 +125,7 @@ const K = A({
       }).finally(() => {
         n.loading = !1;
       }));
-    }, S = (t, a) => {
+    }, w = (t, a) => {
       c("onDialogShow", t, a);
     }, h = (t) => {
       const a = /* @__PURE__ */ new Map();
@@ -141,7 +140,7 @@ const K = A({
       });
       let i = (f) => {
         var d, m;
-        return typeof e.labelFormat == "function" ? e.labelFormat(f) : typeof e.labelFormat == "object" && ((d = e.labelFormat) == null ? void 0 : d.length) > 0 ? (m = e.labelFormat) == null ? void 0 : m.map((w) => t == null ? void 0 : t[w]).join(" ") : f == null ? void 0 : f[e.searchBy];
+        return typeof e.labelFormat == "function" ? e.labelFormat(f) : typeof e.labelFormat == "object" && ((d = e.labelFormat) == null ? void 0 : d.length) > 0 ? (m = e.labelFormat) == null ? void 0 : m.map((A) => t == null ? void 0 : t[A]).join(" ") : f == null ? void 0 : f[e.searchBy];
       };
       const l = {
         [e.rowKey]: t[e.rowKey],
@@ -154,7 +153,7 @@ const K = A({
       };
       return M(l);
     };
-    D(
+    C(
       () => e.modelValue,
       (t) => {
         var i, l, u;
@@ -167,26 +166,29 @@ const K = A({
       },
       { deep: !0, immediate: !0 }
     );
-    const V = (t, a, i) => {
+    const F = (t, a, i) => {
       o(e.initMultiple ? [] : ""), c("onSearchClear", t, a, i);
     };
-    return C(() => {
+    return k(() => {
       var t;
       !e.fetchUrl && ((t = e.initialDataSource) == null ? void 0 : t.length) > 0 && r(e.initialDataSource, !0, !1);
     }), {
       ...s(n),
       ...s(e),
-      onSearch: F,
+      onSearch: V,
       onSelect: o,
       controlOptions: y,
       deleteRepeat: h,
-      onDialogShow: S,
-      onSearchClear: V
+      onDialogShow: w,
+      onSearchClear: F
     };
   },
   components: {
-    InputAndButoon: k(
+    InputAndButoon: g(
       () => import("../input-and-button/index.vue.mjs")
+    ),
+    SvgIcon: g(
+      () => import("../icon/index.vue.mjs")
     )
   }
 });

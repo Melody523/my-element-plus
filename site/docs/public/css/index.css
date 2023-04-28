@@ -1,0 +1,114 @@
+:root {
+  --vp-c-brand: #646cff;
+  --vp-c-brand-light: #747bff;
+  --vp-c-brand-lighter: #9499ff;
+  --vp-c-brand-lightest: #bcc0ff;
+  --vp-c-brand-dark: #535bf2;
+  --vp-c-brand-darker: #454ce1;
+  --demoblock-border: #e7e7e7;
+  --vp-code-block-bg: #f9fafb;
+}
+
+.demo-block .meta {
+  background-color: var(--vp-code-block-bg);
+}
+.demo-block .t_layout_page {
+  overflow: visible;
+  padding: 0;
+}
+.demo-block .t_layout_page .t_layout_page_item {
+  padding: 0;
+  margin: 0;
+}
+
+html.dark {
+  --vp-code-block-bg: var(--vp-c-bg-alt);
+}
+
+.source th,
+.source td {
+  border: none;
+  background-color: #fff;
+}
+.source table {
+  border-collapse: separate;
+  text-indent: initial;
+  border-spacing: 2px;
+  margin: 0;
+  overflow-x: inherit;
+}
+.source tr:nth-child(2n) {
+  background-color: #fff;
+}
+
+.source tr {
+  border-top: none;
+}
+.VPContent .VPDoc .container .content {
+  padding: 0;
+}
+.VPNav {
+  z-index: 41 !important;
+}
+.VPSidebar {
+  z-index: 40 !important;
+}
+.VPSidebar.open {
+  z-index: 42 !important;
+}
+.VPContent .VPDoc.has-aside .content-container {
+  max-width: 1200px;
+}
+.container .aside {
+  max-width: 200px;
+}
+.button_box,
+.icon_box,
+.search_number_list_box,
+.basic_select_modal_box,
+.search_select_box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.button_box .button_style_default,
+.icon_box .svg-icon {
+  margin: 0 10px 10px 0;
+}
+.button_box .menu_button_box {
+  margin: 0 10px 10px 0;
+}
+.date_picker_box {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.date_picker_box .date_picker_class {
+  margin-right: 10px;
+}
+.digital_range_box {
+  width: 500px;
+}
+.search_number_list_box .input_and_button_box {
+  margin-right: 20px;
+}
+.search_number_list_box .search_number_list_content,
+.basic_select_modal_box .basic_select_modal_content,
+.search_select_box .search_select_content {
+  width: 48%;
+  margin-bottom: 15px;
+}
+.search_number_list_box .search_number_list_content,
+.basic_select_modal_box .basic_select_modal_content,
+.search_select_box .search_select_content {
+  margin-right: 2%;
+}
+.btn_tools {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #dedede;
+}
+.mrgl_10 {
+  margin-left: 10px;
+}

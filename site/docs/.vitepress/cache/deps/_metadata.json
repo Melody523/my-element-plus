@@ -1,0 +1,35 @@
+{
+  "hash": "b772fe8e",
+  "browserHash": "6614c04a",
+  "optimized": {
+    "vue": {
+      "src": "../../../../../node_modules/.pnpm/vue@3.2.36/node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "0b2d69b4",
+      "needsInterop": false
+    },
+    "dayjs": {
+      "src": "../../../../../node_modules/.pnpm/dayjs@1.11.7/node_modules/dayjs/dayjs.min.js",
+      "file": "dayjs.js",
+      "fileHash": "ba1d1bbb",
+      "needsInterop": true
+    },
+    "element-plus": {
+      "src": "../../../../../node_modules/.pnpm/element-plus@2.3.1_vue@3.2.36/node_modules/element-plus/es/index.mjs",
+      "file": "element-plus.js",
+      "fileHash": "6a75d019",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-ZWWGQM3N": {
+      "file": "chunk-ZWWGQM3N.js"
+    },
+    "chunk-BYUHG65D": {
+      "file": "chunk-BYUHG65D.js"
+    },
+    "chunk-DFKQJ226": {
+      "file": "chunk-DFKQJ226.js"
+    }
+  }
+}

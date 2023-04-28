@@ -31,18 +31,6 @@ export declare const RCForm: import("../utils/withinstall").SFCWithInstall<impor
         type: () => any;
         default: () => {};
     };
-    initForm: {
-        type: () => any;
-        default: () => {};
-    };
-    formItemMrgb: {
-        type: NumberConstructor;
-        default: null;
-    };
-    extendAttrUrl: {
-        type: StringConstructor;
-        default: string;
-    };
     fetchUrl: {
         type: import("vue").PropType<(data: any) => Promise<any>>;
     };
@@ -53,10 +41,6 @@ export declare const RCForm: import("../utils/withinstall").SFCWithInstall<impor
     renderFunc: {
         type: FunctionConstructor;
         default: (res: any) => any;
-    };
-    callbackFunc: {
-        type: FunctionConstructor;
-        default: null;
     };
     titleType: {
         type: StringConstructor;
@@ -73,6 +57,7 @@ export declare const RCForm: import("../utils/withinstall").SFCWithInstall<impor
     isEmpty: (value: any) => boolean;
     firstDetailTitleIndex: any;
     getData: () => Promise<void>;
+    clearSelect: (item: any) => void;
     form: import("vue").Ref<any>;
     formRef: import("vue").Ref<any>;
     onChangeFlag: import("vue").Ref<boolean>;
@@ -109,18 +94,6 @@ export declare const RCForm: import("../utils/withinstall").SFCWithInstall<impor
         type: () => any;
         default: () => {};
     };
-    initForm: {
-        type: () => any;
-        default: () => {};
-    };
-    formItemMrgb: {
-        type: NumberConstructor;
-        default: null;
-    };
-    extendAttrUrl: {
-        type: StringConstructor;
-        default: string;
-    };
     fetchUrl: {
         type: import("vue").PropType<(data: any) => Promise<any>>;
     };
@@ -131,10 +104,6 @@ export declare const RCForm: import("../utils/withinstall").SFCWithInstall<impor
     renderFunc: {
         type: FunctionConstructor;
         default: (res: any) => any;
-    };
-    callbackFunc: {
-        type: FunctionConstructor;
-        default: null;
     };
     titleType: {
         type: StringConstructor;
@@ -157,10 +126,6 @@ export declare const RCForm: import("../utils/withinstall").SFCWithInstall<impor
     staticData: any;
     labelWidth: string;
     formRules: any;
-    initForm: any;
-    formItemMrgb: number;
-    extendAttrUrl: string;
-    callbackFunc: Function;
     titleType: string;
 }>>;
 export default RCForm;

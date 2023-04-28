@@ -1,14 +1,14 @@
 import s from "./index.vue2.mjs";
-import { resolveComponent as t, openBlock as o, createElementBlock as d, createElementVNode as n, createBlock as p } from "vue";
+import { resolveComponent as d, openBlock as l, createElementBlock as t, createElementVNode as n, createBlock as p } from "vue";
 import "./index.vue3.mjs";
 import "./index.vue4.mjs";
 import i from "../../_virtual/_plugin-vue_export-helper.mjs";
 const u = { class: "date_picker_class" };
-function c(e, a, m, h, f, k) {
-  const l = t("el-date-picker");
-  return o(), d("div", u, [
+function c(e, a, m, h, f, b) {
+  const o = d("el-date-picker");
+  return l(), t("div", u, [
     n("div", null, [
-      (o(), p(l, {
+      (l(), p(o, {
         "popper-class": `pagination-popper ${e.classKey}`,
         ref: "datePickerRef",
         modelValue: e.value,
@@ -23,12 +23,14 @@ function c(e, a, m, h, f, k) {
         "end-placeholder": e.endPlaceholder,
         onVisibleChange: e.visibleChange,
         "disabled-date": e.disabledDate,
-        editable: !1
-      }, null, 8, ["popper-class", "modelValue", "type", "shortcuts", "format", "onChange", "placeholder", "start-placeholder", "end-placeholder", "onVisibleChange", "disabled-date"]))
+        editable: !1,
+        disabled: e.disabled,
+        clearable: e.clearable
+      }, null, 8, ["popper-class", "modelValue", "type", "shortcuts", "format", "onChange", "placeholder", "start-placeholder", "end-placeholder", "onVisibleChange", "disabled-date", "disabled", "clearable"]))
     ])
   ]);
 }
-const g = /* @__PURE__ */ i(s, [["render", c], ["__scopeId", "data-v-54907bc4"]]);
+const g = /* @__PURE__ */ i(s, [["render", c], ["__scopeId", "data-v-0222c28d"]]);
 export {
   g as default
 };

@@ -44,7 +44,7 @@ function h(o, t, $, C, N, P) {
     })
   ])) : a(o.$slots, "com", { key: 1 }, void 0, !0);
 }
-const z = /* @__PURE__ */ b(c, [["render", h], ["__scopeId", "data-v-038eefb1"]]);
+const z = /* @__PURE__ */ b(c, [["render", h], ["__scopeId", "data-v-7f3aa65b"]]);
 export {
   z as default
 };
